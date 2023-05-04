@@ -1,13 +1,19 @@
+import 'package:blood_bank/view/presentation/Blood_Request/Blood_request_view.dart';
+import 'package:blood_bank/view/presentation/Donate/donate_view.dart';
 import 'package:blood_bank/view/shared/component/device_size.dart';
+import 'package:blood_bank/view/shared/component/helperfunctions.dart';
 import 'package:flutter/material.dart';
 
 import '../../../shared/component/components.dart';
 
-class MainFunctionsButtons extends StatelessWidget {
-  const MainFunctionsButtons({
-    super.key,
-  });
+class MainFunctionsButtons extends StatefulWidget {
+  const MainFunctionsButtons({Key? key}) : super(key: key);
 
+  @override
+  State<MainFunctionsButtons> createState() => _MainFunctionsButtonsState();
+}
+
+class _MainFunctionsButtonsState extends State<MainFunctionsButtons> {
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
@@ -16,7 +22,11 @@ class MainFunctionsButtons extends StatelessWidget {
         MainButton(
           text: 'Donate',
           image: 'assets/donate.png',
-          onTap: () {},
+          onTap: () {
+            setState(() {
+              nextScreen(context, const DonateView());
+            });
+          },
         ),
         SizedBox(
           width: 0.1 * LayoutSize.layoutValue!,
@@ -24,7 +34,11 @@ class MainFunctionsButtons extends StatelessWidget {
         MainButton(
           text: 'Request',
           image: 'assets/request.png',
-          onTap: () {},
+          onTap: () {
+            setState(() {
+              nextScreen(context, const BloodRequestView());
+            });
+          },
         ),
       ]),
       SizedBox(

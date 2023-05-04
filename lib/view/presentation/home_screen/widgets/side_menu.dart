@@ -1,7 +1,11 @@
+import 'package:blood_bank/view/presentation/history/history_view.dart';
 import 'package:blood_bank/view/shared/component/components.dart';
 import 'package:blood_bank/view/shared/component/constants.dart';
 import 'package:blood_bank/view/shared/component/device_size.dart';
+import 'package:blood_bank/view/shared/component/helperfunctions.dart';
 import 'package:flutter/material.dart';
+
+import '../../Requests/requests_sideBar_view.dart';
 
 class NaveBar extends StatefulWidget {
   const NaveBar({super.key});
@@ -44,12 +48,16 @@ class _NaveBarState extends State<NaveBar> {
           const Linesapce(),
           UserOptions(
             text: 'history\t\t\t\t',
-            onTap: () {},
+            onTap: () {
+              nextScreen(context, const HistoryView());
+            },
           ),
           const Linesapce(),
           UserOptions(
             text: 'requests ',
-            onTap: () {},
+            onTap: () {
+              nextScreen(context, const RequestsSideBarView());
+            },
           ),
           const Linesapce(),
           UserOptions(text: 'profile\t\t\t\t ', onTap: () {}),
@@ -61,12 +69,9 @@ class _NaveBarState extends State<NaveBar> {
             width: 166,
             height: 40,
             child: GeneralcustomButton(
+              selected: true,
               text: 'Sign out',
-              onTap: () {
-                setState(() {
-                  print('vdsvdsv');
-                });
-              },
+              onTap: () {},
             ),
           ),
         ],
