@@ -54,7 +54,7 @@ class _SplashViewBodyState extends State<SplashViewBody>
                 fontFamily: 'Poppins',
                 fontSize: 51,
                 fontWeight: FontWeight.bold,
-                color: fontColor,
+                color: anotherColor,
               ),
             ),
           ),

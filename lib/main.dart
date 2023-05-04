@@ -1,5 +1,4 @@
-import 'package:blood_bank/view/presentation/Splash_Screen/splash_view.dart';
-import 'package:blood_bank/view/presentation/on%20Boarding/on_boarding_view.dart';
+import 'package:blood_bank/view/presentation/home_screen/home_body.dart';
 import 'package:blood_bank/view/shared/component/constants.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +19,6 @@ class MyApp extends StatelessWidget {
         ),
         // builder: DevicePreview.appBuilder,
         debugShowCheckedModeBanner: false,
-        home: const SplashView());
+        home: const Home());
   }
 }

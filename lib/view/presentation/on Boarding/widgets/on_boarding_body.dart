@@ -69,7 +69,7 @@ class _OnBoardingViewBodyState extends State<OnBoardingViewBody> {
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 15,
-                  color: fontColor,
+                  color: anotherColor,
                 ),
                 textAlign: TextAlign.left,
               ),

@@ -34,7 +34,7 @@ class PageViewItem extends StatelessWidget {
             fontWeight: FontWeight.bold,
             fontFamily: 'Poppins',
             fontSize: 15,
-            color: fontColor,
+            color: anotherColor,
           ),
           textAlign: TextAlign.center,
         ),
