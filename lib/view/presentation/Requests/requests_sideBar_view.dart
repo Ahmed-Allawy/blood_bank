@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:blood_bank/view/presentation/home_screen/home_body.dart';
 import 'package:blood_bank/view/shared/component/helperfunctions.dart';
 import 'package:flutter/material.dart';

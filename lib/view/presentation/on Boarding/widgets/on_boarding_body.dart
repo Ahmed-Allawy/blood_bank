@@ -1,9 +1,11 @@
 // ignore_for_file: unnecessary_const
 
+import 'package:blood_bank/view/presentation/home_screen/home_body.dart';
 import 'package:blood_bank/view/shared/component/constants.dart';
 import 'package:blood_bank/view/shared/component/device_size.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../shared/component/components.dart';
 import 'custom_page_view.dart';
@@ -64,14 +66,23 @@ class _OnBoardingViewBodyState extends State<OnBoardingViewBody> {
               visible: pageController!.hasClients
                   ? (pageController!.page == 2 ? false : true)
                   : true,
-              child: const Text(
-                'Skip',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 15,
-                  color: anotherColor,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    Get.to(() => const Home(),
+                        transition: Transition.rightToLeft,
+                        duration: const Duration(milliseconds: 500));
+                  });
+                },
+                child: const Text(
+                  'Skip',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 15,
+                    color: anotherColor,
+                  ),
+                  textAlign: TextAlign.left,
                 ),
-                textAlign: TextAlign.left,
               ),
             ),
           ),
@@ -80,6 +91,20 @@ class _OnBoardingViewBodyState extends State<OnBoardingViewBody> {
             left: _screenWidth * 0.25,
             right: _screenWidth * 0.25,
             child: GeneralcustomButton(
+              selected: true,
+              onTap: () {
+                setState(() {
+                  if (pageController!.page! < 2) {
+                    pageController?.nextPage(
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeIn);
+                  } else {
+                    Get.to(() => const Home(),
+                        transition: Transition.rightToLeft,
+                        duration: const Duration(milliseconds: 500));
+                  }
+                });
+              },
               text: pageController!.hasClients
                   ? pageController!.page == 2
                       ? 'Get Start'

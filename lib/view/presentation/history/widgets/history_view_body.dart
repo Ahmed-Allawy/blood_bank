@@ -1,4 +1,5 @@
 // ignore: must_be_immutable
+import 'package:blood_bank/view/presentation/history/widgets/history_cards.dart';
 import 'package:flutter/material.dart';
 
 import '../../../shared/component/components.dart';
@@ -40,7 +41,7 @@ class GeneralPage2 extends StatefulWidget {
 
 class _GeneralPage2State extends State<GeneralPage2> {
   bool _pageNumber = true;
-
+  bool view = false;
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
@@ -83,7 +84,7 @@ class _GeneralPage2State extends State<GeneralPage2> {
             rightButtonOntap: () {
               setState(() {
                 _pageNumber = false;
-                print('pageNumber is false');
+                //print('pageNumber is false');
               });
             },
             leftButtonCaption: widget.leftButtonCaption,
@@ -91,23 +92,78 @@ class _GeneralPage2State extends State<GeneralPage2> {
             leftButtonOntap: () {
               setState(() {
                 _pageNumber = true;
-                print('pageNumber is true');
+                //print('pageNumber is true');
               });
             },
           ),
           if (_pageNumber)
             Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 0.1 * LayoutSize.layoutValue!,
-                    vertical: 0.29 * LayoutSize.layoutValue!,
-                  ),
-                ),
+              child: ListView.builder(
+                itemCount: 7,
+                padding: EdgeInsets.symmetric(
+                    vertical: 0.15 * LayoutSize.layoutValue!),
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                      padding: EdgeInsets.only(
+                          bottom: 0.08 * LayoutSize.layoutValue!),
+                      child: const HistoryDonatesCards(
+                        dateText: '24/12/2023',
+                        personName: '45',
+                        time: '3 : 00 Am',
+                        personLocation: '123,xyz,apt',
+                        qty: "0.6 ounces",
+                      ));
+                },
               ),
             )
           else
-            const Text("data"),
+            Expanded(
+              child: Stack(children: <Widget>[
+                ListView.builder(
+                  itemCount: 7,
+                  padding: EdgeInsets.symmetric(
+                      vertical: 0.15 * LayoutSize.layoutValue!),
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                        padding: EdgeInsets.only(
+                            bottom: 0.08 * LayoutSize.layoutValue!),
+                        child: HistoryReceivedCards(
+                          dateText: '24/12/2023',
+                          personName: '45',
+                          time: '3 : 00 Am',
+                          personLocation: '123,xyz,apt',
+                          qty: "0.6 ounces",
+                          onTap: () {
+                            setState(() {
+                              view = true;
+                            });
+                          },
+                        ));
+                  },
+                ),
+                if (view)
+                  Center(
+                      child: SingleChildScrollView(
+                          child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 0.1 * LayoutSize.layoutValue!,
+                                vertical: 0.2 * LayoutSize.layoutValue!,
+                              ),
+                              child: GeneralUserInfo(
+                                buttonCaption: 'Back',
+                                email: 'ahmed@gmail.com',
+                                location: 'phaqos-elshaqia',
+                                ontap: () {
+                                  setState(() {
+                                    view = false;
+                                  });
+                                },
+                                phoneNumber: '0102332433',
+                                imageBlood: 'assets/O.png',
+                                personName: "Ahmed Allawy Zena",
+                              ))))
+              ]),
+            )
         ],
       ),
     );

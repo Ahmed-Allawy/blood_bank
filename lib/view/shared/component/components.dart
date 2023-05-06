@@ -259,25 +259,26 @@ class GeneralPage1 extends StatefulWidget {
     required this.email,
     required this.buttonCaption,
     required this.backOntap,
-    required this.locationImage,
-    required this.phoneImage,
-    required this.emailImage,
     required this.leftButtonCaption,
     required this.rightButtonCation,
+    required this.imageBlood,
+    required this.personName,
   }) : super(key: key);
 
   final String? pageTitle;
   final String? location;
-  final IconData? locationImage;
+
   final String? phoneNumber;
-  final IconData? phoneImage;
+
   final String? email;
-  final IconData? emailImage;
+
   final String? buttonCaption;
   final VoidCallback? doneOntap;
   final VoidCallback? backOntap;
   final String? leftButtonCaption;
   final String? rightButtonCation;
+  final String? imageBlood;
+  final String? personName;
   @override
   State<GeneralPage1> createState() => _GeneralPage1State();
 }
@@ -349,13 +350,12 @@ class _GeneralPage1State extends State<GeneralPage1> {
                   ),
                   child: GeneralUserInfo(
                     location: widget.location!,
-                    locationImage: widget.locationImage!,
                     phoneNumber: widget.phoneNumber!,
                     email: widget.email!,
-                    phoneInmage: widget.phoneImage,
-                    emailImage: widget.emailImage,
                     buttonCaption: widget.buttonCaption,
                     ontap: widget.doneOntap,
+                    imageBlood: widget.imageBlood,
+                    personName: widget.personName,
                   ),
                 ),
               ),
@@ -371,22 +371,23 @@ class _GeneralPage1State extends State<GeneralPage1> {
 class GeneralUserInfo extends StatelessWidget {
   const GeneralUserInfo(
       {super.key,
-      this.location,
-      this.phoneNumber,
-      this.email,
+      required this.location,
+      required this.phoneNumber,
+      required this.email,
       this.buttonCaption,
       this.ontap,
-      this.phoneInmage,
-      this.emailImage,
-      this.locationImage});
+      this.imageBlood,
+      required this.personName});
   final String? location;
-  final IconData? locationImage;
+
   final String? phoneNumber;
-  final IconData? phoneInmage;
+
   final String? email;
-  final IconData? emailImage;
+
   final String? buttonCaption;
   final VoidCallback? ontap;
+  final String? imageBlood;
+  final String? personName;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -395,14 +396,19 @@ class GeneralUserInfo extends StatelessWidget {
           color: popColor, borderRadius: BorderRadius.all(Radius.circular(51))),
       child: Column(
         children: <Widget>[
-          Image.asset(
-            'assets/O.png',
-            width: 88,
-            height: 119,
-          ),
-          const Text(
-            'Ahmed allawy',
-            style: TextStyle(
+          if (imageBlood != null)
+            Image.asset(
+              imageBlood!,
+              width: 88,
+              height: 119,
+            ),
+          if (imageBlood == null)
+            SizedBox(
+              height: 0.04 * LayoutSize.layoutValue!,
+            ),
+          Text(
+            personName!,
+            style: const TextStyle(
               fontSize: 20,
               color: secondaryColor,
               fontWeight: FontWeight.w500,
@@ -414,38 +420,147 @@ class GeneralUserInfo extends StatelessWidget {
           ),
           GeeneralLable(
             text: location!,
-            image: locationImage!,
+            image: Icons.location_on,
           ),
           SizedBox(
             height: 0.04 * LayoutSize.layoutValue!,
           ),
           GeeneralLable(
             text: phoneNumber!,
-            image: phoneInmage!,
+            image: Icons.phone,
           ),
           SizedBox(
             height: 0.04 * LayoutSize.layoutValue!,
           ),
           GeeneralLable(
             text: email!,
-            image: emailImage!,
+            image: Icons.email,
           ),
           SizedBox(
             height: 0.06 * LayoutSize.layoutValue!,
           ),
-          SizedBox(
-            width: 130,
-            height: 40,
-            child: GeneralcustomButton(
-              text: buttonCaption,
-              onTap: ontap,
-              selected: true,
+          if (buttonCaption != null)
+            SizedBox(
+              width: 130,
+              height: 40,
+              child: GeneralcustomButton(
+                text: buttonCaption,
+                onTap: ontap,
+                selected: true,
+              ),
             ),
-          ),
           SizedBox(
             height: 0.06 * LayoutSize.layoutValue!,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class BloodBankCards extends StatelessWidget {
+  const BloodBankCards({
+    super.key,
+    required this.dateText,
+    required this.personName,
+    required this.time,
+    required this.personLocation,
+    required this.personImage,
+    required this.onTapButton,
+    required this.buttonCaption,
+  });
+  final String? dateText;
+  final String? personName;
+  final String? time;
+  final String? personLocation;
+  final String? personImage;
+  final VoidCallback? onTapButton;
+  final String? buttonCaption;
+  @override
+  Widget build(BuildContext context) {
+    LayoutSize().init(context);
+    return Center(
+      child: Stack(children: <Widget>[
+        Container(
+          height: LayoutSize.layoutValue! * 0.36,
+          width: LayoutSize.layoutValue! * 0.9,
+          decoration: const BoxDecoration(
+              color: anotherColor,
+              borderRadius: BorderRadius.all(Radius.circular(11))),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 15, top: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    TextField(
+                      text: "Date: $dateText",
+                    ),
+                    SizedBox(
+                      width: (LayoutSize.layoutValue! * 0.9) / 4.5,
+                    ),
+                    TextField(
+                      text: personName,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: LayoutSize.layoutValue! * 0.025,
+                ),
+                TextField(
+                  text: "Time: $time",
+                ),
+                SizedBox(
+                  height: LayoutSize.layoutValue! * 0.025,
+                ),
+                TextField(
+                  text: "Location: $personLocation",
+                ),
+                SizedBox(
+                  height: LayoutSize.layoutValue! * 0.02,
+                ),
+                SizedBox(
+                  width: 110,
+                  height: 37,
+                  child: GeneralcustomButton(
+                    text: buttonCaption,
+                    onTap: onTapButton,
+                    selected: true,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 2,
+          right: 40,
+          child: Image.asset(
+            personImage!,
+            width: 88,
+            height: 119,
+          ),
+        ),
+      ]),
+    );
+  }
+}
+
+class TextField extends StatelessWidget {
+  const TextField({
+    super.key,
+    this.text,
+  });
+  final String? text;
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text!,
+      style: const TextStyle(
+        fontSize: 16,
+        color: secondaryColor,
+        fontWeight: FontWeight.w500,
       ),
     );
   }

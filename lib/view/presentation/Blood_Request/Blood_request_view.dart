@@ -23,11 +23,8 @@ class _BloodrequestViewState extends State<BloodRequestView> {
         nextScreenRep(context, const Home());
       },
       buttonCaption: 'Rquest blood',
-      phoneImage: Icons.phone,
       email: 'dgdssd@sdgd.com',
-      emailImage: Icons.email,
       location: 'cdscdsdsc',
-      locationImage: Icons.location_on,
       doneOntap: () {
         setState(() {
           print("object");
@@ -37,6 +34,8 @@ class _BloodrequestViewState extends State<BloodRequestView> {
       phoneNumber: '0101021342',
       leftButtonCaption: 'Self',
       rightButtonCation: 'Other',
+      imageBlood: 'assets/O.png',
+      personName: 'Ahmed allawy',
     );
   }
 }

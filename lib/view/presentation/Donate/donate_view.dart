@@ -22,11 +22,8 @@ class _DonateViewState extends State<DonateView> {
         nextScreenRep(context, const Home());
       },
       buttonCaption: 'Next',
-      phoneImage: Icons.phone,
       email: 'dgdssd@sdgd.com',
-      emailImage: Icons.email,
       location: 'cdscdsdsc',
-      locationImage: Icons.location_on,
       doneOntap: () {
         setState(() {
           print("object");
@@ -36,6 +33,8 @@ class _DonateViewState extends State<DonateView> {
       phoneNumber: '0101021342',
       leftButtonCaption: 'Self',
       rightButtonCation: 'Other',
+      imageBlood: 'assets/O.png',
+      personName: 'Ahmed Allawy',
     );
   }
 }

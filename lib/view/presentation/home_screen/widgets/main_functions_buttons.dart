@@ -1,5 +1,6 @@
 import 'package:blood_bank/view/presentation/Blood_Request/Blood_request_view.dart';
 import 'package:blood_bank/view/presentation/Donate/donate_view.dart';
+import 'package:blood_bank/view/presentation/blood_bank/blood_bank_view.dart';
 import 'package:blood_bank/view/shared/component/device_size.dart';
 import 'package:blood_bank/view/shared/component/helperfunctions.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +57,9 @@ class _MainFunctionsButtonsState extends State<MainFunctionsButtons> {
         MainButton(
           text: 'Blood Bank',
           image: 'assets/blood_bank.png',
-          onTap: () {},
+          onTap: () {
+            nextScreen(context, const BloodBankView());
+          },
         ),
       ]),
     ]);
