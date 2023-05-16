@@ -31,4 +31,21 @@ class _RequestsSideBarViewState extends State<RequestsSideBarView> {
 //// get my requests
 ///{
 ///date, time, location, name(self or other), blood group, status(accepted or pending)
+
 ///} i can remove pending requests
+//this for removeing the request 
+// var headers = {
+//   'Authorization': 'Token 08fda60e13a1e8adff11b07089d40db8fa7e03ec'
+// };
+// var request = http.MultipartRequest('POST', Uri.parse('http://127.0.0.1:8000/blood/6/request-delete/'));
+
+// request.headers.addAll(headers);
+
+// http.StreamedResponse response = await request.send();
+
+// if (response.statusCode == 200) {
+//   print(await response.stream.bytesToString());
+// }
+// else {
+//   print(response.reasonPhrase);
+// }
