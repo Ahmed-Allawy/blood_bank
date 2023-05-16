@@ -5,41 +5,46 @@ import 'package:flutter/material.dart';
 import '../../../shared/component/components.dart';
 import '../../../shared/component/constants.dart';
 import '../../../shared/component/device_size.dart';
+import '../../../shared/component/helperfunctions.dart';
+import '../../home_screen/home_body.dart';
 
-class GeneralPage2 extends StatefulWidget {
-  const GeneralPage2({
+class HistoryViewBody extends StatefulWidget {
+  const HistoryViewBody({
     Key? key,
-    required this.pageTitle,
-    required this.doneOntap,
-    required this.location,
-    required this.phoneNumber,
-    required this.email,
-    required this.buttonCaption,
-    required this.backOntap,
-    required this.locationImage,
-    required this.phoneImage,
-    required this.emailImage,
-    required this.leftButtonCaption,
-    required this.rightButtonCation,
+    required this.dateTextD,
+    required this.timeD,
+    required this.personLocationD,
+    required this.dateTextR,
+    required this.timeR,
+    required this.personLocationR,
+    required this.donarID,
+    required this.receiverID,
+    required this.donarName,
+    required this.donarPhoneNumber,
+    required this.donarEmail,
+    required this.bloodType,
   }) : super(key: key);
 
-  final String? pageTitle;
-  final String? location;
-  final IconData? locationImage;
-  final String? phoneNumber;
-  final IconData? phoneImage;
-  final String? email;
-  final IconData? emailImage;
-  final String? buttonCaption;
-  final VoidCallback? doneOntap;
-  final VoidCallback? backOntap;
-  final String? leftButtonCaption;
-  final String? rightButtonCation;
+  /// doner info
+  final String? dateTextD;
+  final String? donarID;
+  final String? timeD;
+  final String? personLocationD;
+  //more info about donar
+  final String? donarName;
+  final String? donarPhoneNumber;
+  final String? donarEmail;
+  final String? bloodType;
+  //// receiver info
+  final String? dateTextR;
+  final String? receiverID;
+  final String? timeR;
+  final String? personLocationR;
   @override
-  State<GeneralPage2> createState() => _GeneralPage2State();
+  State<HistoryViewBody> createState() => _HistoryViewBodyState();
 }
 
-class _GeneralPage2State extends State<GeneralPage2> {
+class _HistoryViewBodyState extends State<HistoryViewBody> {
   bool _pageNumber = true;
   bool view = false;
   @override
@@ -61,12 +66,14 @@ class _GeneralPage2State extends State<GeneralPage2> {
         ),
         leading: BackButton(
           color: secondaryColor,
-          onPressed: widget.backOntap,
+          onPressed: () {
+            nextScreenRep(context, const Home());
+          },
         ),
         centerTitle: true,
-        title: Text(
-          widget.pageTitle!,
-          style: const TextStyle(
+        title: const Text(
+          'History',
+          style: TextStyle(
             fontSize: 36,
             color: secondaryColor,
             fontWeight: FontWeight.w500,
@@ -87,8 +94,8 @@ class _GeneralPage2State extends State<GeneralPage2> {
                 //print('pageNumber is false');
               });
             },
-            leftButtonCaption: widget.leftButtonCaption,
-            rightButtonCation: widget.rightButtonCation,
+            leftButtonCaption: 'Donated',
+            rightButtonCation: "Received",
             leftButtonOntap: () {
               setState(() {
                 _pageNumber = true;
@@ -106,13 +113,11 @@ class _GeneralPage2State extends State<GeneralPage2> {
                   return Padding(
                       padding: EdgeInsets.only(
                           bottom: 0.08 * LayoutSize.layoutValue!),
-                      child: const HistoryDonatesCards(
-                        dateText: '24/12/2023',
-                        personName: '45',
-                        time: '3 : 00 Am',
-                        personLocation: '123,xyz,apt',
-                        qty: "0.6 ounces",
-                      ));
+                      child: HistoryDonatesCards(
+                          dateText: widget.dateTextR,
+                          personName: widget.receiverID,
+                          time: widget.timeR,
+                          personLocation: widget.personLocationR));
                 },
               ),
             )
@@ -128,11 +133,10 @@ class _GeneralPage2State extends State<GeneralPage2> {
                         padding: EdgeInsets.only(
                             bottom: 0.08 * LayoutSize.layoutValue!),
                         child: HistoryReceivedCards(
-                          dateText: '24/12/2023',
-                          personName: '45',
-                          time: '3 : 00 Am',
-                          personLocation: '123,xyz,apt',
-                          qty: "0.6 ounces",
+                          dateText: widget.dateTextD,
+                          personName: widget.donarID,
+                          time: widget.timeD,
+                          personLocation: widget.personLocationD,
                           onTap: () {
                             setState(() {
                               view = true;
@@ -150,18 +154,17 @@ class _GeneralPage2State extends State<GeneralPage2> {
                                 vertical: 0.2 * LayoutSize.layoutValue!,
                               ),
                               child: GeneralUserInfo(
-                                buttonCaption: 'Back',
-                                email: 'ahmed@gmail.com',
-                                location: 'phaqos-elshaqia',
-                                ontap: () {
-                                  setState(() {
-                                    view = false;
-                                  });
-                                },
-                                phoneNumber: '0102332433',
-                                imageBlood: 'assets/O.png',
-                                personName: "Ahmed Allawy Zena",
-                              ))))
+                                  buttonCaption: 'Back',
+                                  email: widget.donarEmail,
+                                  location: widget.personLocationD,
+                                  ontap: () {
+                                    setState(() {
+                                      view = false;
+                                    });
+                                  },
+                                  phoneNumber: widget.donarPhoneNumber,
+                                  imageBlood: widget.bloodType,
+                                  personName: widget.donarName))))
               ]),
             )
         ],

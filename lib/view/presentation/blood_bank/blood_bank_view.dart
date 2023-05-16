@@ -13,14 +13,7 @@ class BloodBankView extends StatefulWidget {
 class _BloodBankViewState extends State<BloodBankView> {
   @override
   Widget build(BuildContext context) {
-    return BloodBankViewBody(
-      pageTitle: "Manage Bloods",
-      backOntap: () {
-        nextScreenRep(context, const Home());
-      },
-      leftButtonCaption: "Rquests",
-      rightButtonCation: "Bank",
-      middleButtonCaption: 'Donates',
+    return const BloodBankViewBody(
       requestAccept: true,
       dateTextR: '24/12/2023',
       personNameR: 'Ahmed Allawy',
@@ -32,6 +25,26 @@ class _BloodBankViewState extends State<BloodBankView> {
       timeD: '3 : 00 Am',
       personLocationD: '123,xyz,apt',
       personImageD: 'assets/BB.png',
+      dateTextB: '24/12/2023',
+      personNameB: 'Ahmed Allawy',
+      timeB: '3 : 00 Am',
+      personLocationB: '123,xyz,apt',
+      personImageB: 'assets/O.png',
     );
   }
 }
+
+///// requests API(get all)
+///{
+///date, time, name, location, blood group, status(accepted or pendding)
+///} i can change status
+///****************************************/
+///Donates API(get all)
+///{
+///date, time, name, location, blood group
+///}
+//////****************************************/
+///Bank API(get all)
+///{
+///date, time, name, location, blood group
+///} i can remove any item

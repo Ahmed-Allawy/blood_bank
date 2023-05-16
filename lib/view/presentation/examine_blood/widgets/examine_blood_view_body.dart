@@ -3,30 +3,32 @@ import 'package:flutter/material.dart';
 
 import '../../../shared/component/constants.dart';
 import '../../../shared/component/device_size.dart';
+import '../../../shared/component/helperfunctions.dart';
+import '../../blood_bank/blood_bank_view.dart';
 
 class ExamineBlood extends StatefulWidget {
-  const ExamineBlood(
-      {super.key,
-      required this.pageTitle,
-      required this.backOntap,
-      required this.location,
-      required this.phoneNumber,
-      required this.email,
-      required this.ontap,
-      required this.personName});
-  final String? pageTitle;
-  final VoidCallback? backOntap;
+  const ExamineBlood({
+    super.key,
+    required this.email,
+    required this.location,
+    required this.personName,
+    required this.phoneNumber,
+  });
   final String? location;
   final String? phoneNumber;
   final String? email;
-  final VoidCallback? ontap;
-
   final String? personName;
   @override
   State<ExamineBlood> createState() => _ExamineBloodState();
 }
 
 class _ExamineBloodState extends State<ExamineBlood> {
+  String bloodGroupType = '';
+  final haimoglobinController = TextEditingController();
+  final pressureController = TextEditingController();
+  final pulseController = TextEditingController();
+  var formKey = GlobalKey<FormState>();
+  List bloodGroup = ['AB+', 'AB-', 'A', 'AA', 'B', 'BB', 'O', 'OO'];
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
@@ -46,19 +48,21 @@ class _ExamineBloodState extends State<ExamineBlood> {
           ),
           leading: BackButton(
             color: secondaryColor,
-            onPressed: widget.backOntap,
+            onPressed: () {
+              nextScreenRep(context, const BloodBankView());
+            },
           ),
           centerTitle: true,
-          title: Text(
-            widget.pageTitle!,
-            style: const TextStyle(
+          title: const Text(
+            'Examine Blood',
+            style: TextStyle(
               fontSize: 36,
               color: secondaryColor,
               fontWeight: FontWeight.w500,
             ),
           ),
         ),
-        body: Center(
+        body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
               SizedBox(
@@ -72,13 +76,109 @@ class _ExamineBloodState extends State<ExamineBlood> {
                     email: widget.email,
                     personName: widget.personName),
               ),
-              SizedBox(
-                width: 130,
-                height: 40,
-                child: GeneralcustomButton(
-                  text: "Done",
-                  onTap: widget.ontap,
-                  selected: true,
+              Form(
+                //this is the key
+                key: formKey,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 70, right: 70, top: 20),
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 10),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: anotherColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(children: <Widget>[
+                            const Icon(
+                              Icons.bloodtype,
+                              color: secondaryColor,
+                            ),
+                            DropdownButton(
+                                iconEnabledColor: secondaryColor,
+                                hint: Text(
+                                  bloodGroupType.isEmpty
+                                      ? 'Select Blood Group'
+                                      : 'your blood group is  $bloodGroupType',
+                                  style: TextStyle(
+                                      color: bloodGroupType.isEmpty
+                                          ? popColor
+                                          : Colors.black),
+                                ),
+                                items: bloodGroup.map((value) {
+                                  return DropdownMenuItem(
+                                      value: value, child: Text(value));
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    bloodGroupType = value.toString();
+                                    print(bloodGroupType);
+                                  });
+                                }),
+                          ]),
+                        ),
+                      ),
+                      TextInputField(
+                        textController: haimoglobinController,
+                        keyboardType: TextInputType.number,
+                        hintText: 'Haimoglobin',
+                        icon: const Icon(Icons.person),
+                        obscureText: false,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Invalied Input';
+                          }
+                          return null;
+                        },
+                      ),
+                      TextInputField(
+                        textController: pressureController,
+                        keyboardType: TextInputType.number,
+                        hintText: 'Pressure',
+                        icon: const Icon(Icons.person),
+                        obscureText: false,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Invalied Input';
+                          }
+                          return null;
+                        },
+                      ),
+                      TextInputField(
+                        textController: pulseController,
+                        keyboardType: TextInputType.number,
+                        hintText: 'Pulse',
+                        icon: const Icon(Icons.person),
+                        obscureText: false,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Invalied Input';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(
+                        height: 0.1 * LayoutSize.layoutValue!,
+                      ),
+                      SizedBox(
+                        width: 210,
+                        height: 50,
+                        child: GeneralcustomButton(
+                          text: "Done",
+                          onTap: () {
+                            if (formKey.currentState!.validate()) {
+                              formKey.currentState!.save();
+                            }
+                          },
+                          selected: true,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

@@ -4,11 +4,11 @@
 
 import 'dart:convert';
 
-import 'package:blood_bank/view/shared/component/components.dart';
+import 'package:blood_bank/view/presentation/Blood_Request/widgets/blood_request_view_body.dart';
+
 import 'package:flutter/material.dart';
 import '../../../model/model.dart';
-import '../../shared/component/helperfunctions.dart';
-import '../home_screen/home_body.dart';
+
 import 'package:http/http.dart' as http;
 
 class BloodRequestView extends StatefulWidget {
@@ -21,11 +21,7 @@ class BloodRequestView extends StatefulWidget {
 class _BloodrequestViewState extends State<BloodRequestView> {
   @override
   Widget build(BuildContext context) {
-    return GeneralPage1(
-      backOntap: () {
-        nextScreenRep(context, const Home());
-      },
-      buttonCaption: 'Rquest blood',
+    return BloodRequestViewBody(
       email: 'dgdssd@sdgd.com',
       location: 'cdscdsdsc',
       doneOntap: () {
@@ -33,25 +29,31 @@ class _BloodrequestViewState extends State<BloodRequestView> {
           print("object");
           // sendBloodRequest();
           // signup(user);
-          login();
+          sendBloodRequest();
         });
       },
-      pageTitle: 'Blood Blood',
       phoneNumber: '0101021342',
-      leftButtonCaption: 'Self',
-      rightButtonCation: 'Other',
       imageBlood: 'assets/O.png',
       personName: 'Ahmed allawy',
     );
   }
 }
 
+/// Self API (get)
+/// {
+/// bloog group,
+/// name,
+/// location,
+/// phone number,
+/// email
+/// } i can make request blood with these info
+
 void sendBloodRequest() async {
   var headers = {
-    'Authorization': 'Token a5fd5ff9e485f4938c0bd3606c1d5060c7e63821'
+    'Authorization': 'Token 7a205b729e056c374273c270d8ef97b79b87116f'
   };
   var request = http.Request(
-      'POST', Uri.parse('http://127.0.0.1:8000/blood/request-self/'));
+      'GET', Uri.parse('http://127.0.0.1:8000/blood/all/blood-requests/'));
 
   request.headers.addAll(headers);
 
@@ -96,7 +98,7 @@ void login() async {
   var headers = {'Content-Type': 'application/json'};
   var request = http.Request('POST', Uri.parse('http://127.0.0.1:8000/login/'));
   //here I send the password and the phone number for login by passing them to the body
-  request.body = json.encode({"password": "123", "phone_num": "01154363771"});
+  request.body = json.encode({"password": "123", "phone_num": "0123456789"});
   request.headers.addAll(headers);
 
   http.StreamedResponse response = await request.send();

@@ -11,13 +11,12 @@ class HistoryDonatesCards extends StatelessWidget {
     required this.personName,
     required this.time,
     required this.personLocation,
-    required this.qty,
   });
   final String? dateText;
   final String? personName;
   final String? time;
   final String? personLocation;
-  final String? qty;
+
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
@@ -58,12 +57,6 @@ class HistoryDonatesCards extends StatelessWidget {
               TextField(
                 text: "Location: $personLocation",
               ),
-              SizedBox(
-                height: LayoutSize.layoutValue! * 0.035,
-              ),
-              TextField(
-                text: "QTY : $qty",
-              ),
             ],
           ),
         ),
@@ -98,14 +91,12 @@ class HistoryReceivedCards extends StatelessWidget {
     required this.personName,
     required this.time,
     required this.personLocation,
-    required this.qty,
     required this.onTap,
   });
   final String? dateText;
   final String? personName;
   final String? time;
   final String? personLocation;
-  final String? qty;
   final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
@@ -150,24 +141,14 @@ class HistoryReceivedCards extends StatelessWidget {
               SizedBox(
                 height: LayoutSize.layoutValue! * 0.02,
               ),
-              Row(
-                children: <Widget>[
-                  TextField(
-                    text: "QTY : $qty",
-                  ),
-                  SizedBox(
-                    width: LayoutSize.layoutValue! * 0.15,
-                  ),
-                  SizedBox(
-                    width: 135,
-                    height: 37,
-                    child: GeneralcustomButton(
-                      text: "View Details",
-                      onTap: onTap,
-                      selected: true,
-                    ),
-                  ),
-                ],
+              SizedBox(
+                width: 135,
+                height: 37,
+                child: GeneralcustomButton(
+                  text: "View Details",
+                  onTap: onTap,
+                  selected: true,
+                ),
               ),
             ],
           ),

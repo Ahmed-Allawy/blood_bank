@@ -7,6 +7,8 @@ import 'package:blood_bank/view/shared/component/components.dart';
 import 'package:blood_bank/view/shared/component/helperfunctions.dart';
 import 'package:flutter/material.dart';
 
+import 'widgets/donate_view_body.dart';
+
 class DonateView extends StatefulWidget {
   const DonateView({super.key});
 
@@ -17,24 +19,27 @@ class DonateView extends StatefulWidget {
 class _DonateViewState extends State<DonateView> {
   @override
   Widget build(BuildContext context) {
-    return GeneralPage1(
-      backOntap: () {
-        nextScreenRep(context, const Home());
-      },
-      buttonCaption: 'Next',
+    return DonateViewBody(
       email: 'dgdssd@sdgd.com',
       location: 'cdscdsdsc',
       doneOntap: () {
         setState(() {
           print("object");
+          // sendBloodRequest();
+          // signup(user);
         });
       },
-      pageTitle: 'Donate',
       phoneNumber: '0101021342',
-      leftButtonCaption: 'Self',
-      rightButtonCation: 'Other',
       imageBlood: 'assets/O.png',
-      personName: 'Ahmed Allawy',
+      personName: 'Ahmed allawy',
     );
   }
 }
+/// Self API (get)
+/// {
+/// bloog group,
+/// name,
+/// location,
+/// phone number,
+/// email
+/// } i can make donate with these info

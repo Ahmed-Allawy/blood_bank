@@ -1,4 +1,6 @@
 // ignore: must_be_immutable
+// ignore_for_file: unrelated_type_equality_checks
+
 import 'package:blood_bank/view/presentation/examine_blood/examine_blood_view.dart';
 import 'package:blood_bank/view/shared/component/components.dart';
 import 'package:blood_bank/view/shared/component/helperfunctions.dart';
@@ -6,15 +8,11 @@ import 'package:flutter/material.dart';
 
 import '../../../shared/component/constants.dart';
 import '../../../shared/component/device_size.dart';
+import '../../home_screen/home_body.dart';
 
 class BloodBankViewBody extends StatefulWidget {
   const BloodBankViewBody({
     Key? key,
-    required this.pageTitle,
-    required this.backOntap,
-    required this.leftButtonCaption,
-    required this.rightButtonCation,
-    required this.middleButtonCaption,
     required this.requestAccept,
     required this.dateTextR,
     required this.personNameR,
@@ -26,13 +24,13 @@ class BloodBankViewBody extends StatefulWidget {
     required this.timeD,
     required this.personLocationD,
     required this.personImageD,
+    required this.dateTextB,
+    required this.personNameB,
+    required this.timeB,
+    required this.personLocationB,
+    required this.personImageB,
   }) : super(key: key);
 
-  final String? pageTitle;
-  final VoidCallback? backOntap;
-  final String? leftButtonCaption;
-  final String? rightButtonCation;
-  final String? middleButtonCaption;
   final bool? requestAccept;
   final String? dateTextR;
   final String? personNameR;
@@ -44,6 +42,11 @@ class BloodBankViewBody extends StatefulWidget {
   final String? timeD;
   final String? personLocationD;
   final String? personImageD;
+  final String? dateTextB;
+  final String? personNameB;
+  final String? timeB;
+  final String? personLocationB;
+  final String? personImageB;
   @override
   State<BloodBankViewBody> createState() => _BloodBankViewBodyState();
 }
@@ -51,7 +54,7 @@ class BloodBankViewBody extends StatefulWidget {
 class _BloodBankViewBodyState extends State<BloodBankViewBody> {
   bool requestButton = true;
   bool donateButtonState = false;
-  bool btnThirdState = false;
+  bool bankButtonState = false;
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
@@ -71,12 +74,14 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
           ),
           leading: BackButton(
             color: secondaryColor,
-            onPressed: widget.backOntap,
+            onPressed: () {
+              nextScreenRep(context, const Home());
+            },
           ),
           centerTitle: true,
-          title: Text(
-            widget.pageTitle!,
-            style: const TextStyle(
+          title: const Text(
+            'Manage Bloods',
+            style: TextStyle(
               fontSize: 36,
               color: secondaryColor,
               fontWeight: FontWeight.w500,
@@ -89,31 +94,31 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
               height: 0.08 * LayoutSize.layoutValue!,
             ),
             ThreeButtons(
-              leftButtonCaption: widget.leftButtonCaption,
-              rightButtonCation: widget.rightButtonCation,
-              middleButtonCaption: widget.middleButtonCaption,
+              leftButtonCaption: 'Requests',
+              rightButtonCation: 'Bank',
+              middleButtonCaption: 'Donates',
               requestButton: requestButton,
-              btnThirdState: btnThirdState,
+              btnThirdState: bankButtonState,
               donateButtonState: donateButtonState,
               ontapOne: () {
                 setState(() {
                   requestButton = true;
                   donateButtonState = false;
-                  btnThirdState = false;
+                  bankButtonState = false;
                 });
               },
               ontapTwo: () {
                 setState(() {
                   requestButton = false;
                   donateButtonState = true;
-                  btnThirdState = false;
+                  bankButtonState = false;
                 });
               },
               ontapThree: () {
                 setState(() {
                   requestButton = false;
                   donateButtonState = false;
-                  btnThirdState = true;
+                  bankButtonState = true;
                 });
               },
             ),
@@ -134,8 +139,16 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
                           personLocation: widget.personLocationR,
                           personImage: widget.personImageR,
                           buttonCaption:
-                              widget.requestAccept! ? "Done" : "Accept",
-                          onTapButton: () {},
+                              widget.requestAccept! ? "Accept" : "Done",
+                          onTapButton: () {
+                            setState(() {
+                              if (widget.requestAccept! == true) {
+                                print("request accepted");
+                              } else {
+                                print("pationt toke the blood");
+                              }
+                            });
+                          },
                         ));
                   },
                 ),
@@ -160,6 +173,28 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
                           onTapButton: () {
                             nextScreen(context, const ExamineBloodView());
                           },
+                        ));
+                  },
+                ),
+              ),
+            if (bankButtonState)
+              Expanded(
+                child: ListView.builder(
+                  itemCount: 7,
+                  padding: EdgeInsets.symmetric(
+                      vertical: 0.15 * LayoutSize.layoutValue!),
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                        padding: EdgeInsets.only(
+                            bottom: 0.08 * LayoutSize.layoutValue!),
+                        child: BloodBankCards(
+                          dateText: widget.dateTextB,
+                          personName: widget.personNameB,
+                          time: widget.timeD,
+                          personLocation: widget.personLocationB,
+                          personImage: widget.personImageB,
+                          buttonCaption: 'Donated',
+                          onTapButton: () {},
                         ));
                   },
                 ),
@@ -248,3 +283,17 @@ class _ThreeButtonsState extends State<ThreeButtons> {
     );
   }
 }
+///// requests API(get all)
+///{
+///date, time, name, location, blood group, status(accepted or pendding)
+///} i can change status
+///****************************************/
+///Donates API(get all)
+///{
+///date, time, name, location, blood group
+///}
+//////****************************************/
+///Bank API(get all)
+///{
+///date, time, name, location, blood group
+///} i can remove any item

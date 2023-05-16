@@ -1,10 +1,14 @@
-// ignore_for_file: unused_element, non_constant_identifier_names, avoid_print
+// ignore_for_file: unused_element, non_constant_identifier_names, avoid_print, library_private_types_in_public_api
 
 import 'package:blood_bank/view/shared/component/constants.dart';
+import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
 
+import '../../presentation/auth/login/login.dart';
+import '../../presentation/home_screen/home_body.dart';
 import 'device_size.dart';
+import 'helperfunctions.dart';
 
 // ignore: must_be_immutable
 class GeneralcustomButton extends StatelessWidget {
@@ -250,7 +254,7 @@ class GeneralOptionButtons extends StatelessWidget {
 
 // ignore: must_be_immutable
 class GeneralPage1 extends StatefulWidget {
-  const GeneralPage1({
+  GeneralPage1({
     Key? key,
     required this.pageTitle,
     required this.doneOntap,
@@ -267,11 +271,8 @@ class GeneralPage1 extends StatefulWidget {
 
   final String? pageTitle;
   final String? location;
-
   final String? phoneNumber;
-
   final String? email;
-
   final String? buttonCaption;
   final VoidCallback? doneOntap;
   final VoidCallback? backOntap;
@@ -279,6 +280,14 @@ class GeneralPage1 extends StatefulWidget {
   final String? rightButtonCation;
   final String? imageBlood;
   final String? personName;
+  /////// other anfo
+  String? otherPhoneNumber;
+  String otherBloodGroupType = '';
+  final otherNameController = TextEditingController();
+  final otherLocationController = TextEditingController();
+  final otherDateController = TextEditingController();
+  var formKey = GlobalKey<FormState>();
+  List bloodGroup = ['AB+', 'AB-', 'A', 'AA', 'B', 'BB', 'O', 'OO'];
   @override
   State<GeneralPage1> createState() => _GeneralPage1State();
 }
@@ -361,7 +370,102 @@ class _GeneralPage1State extends State<GeneralPage1> {
               ),
             )
           else
-            const Text("data"),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Form(
+                  //this is the key
+                  key: widget.formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 60),
+                    child: Column(
+                      children: <Widget>[
+                        TextInputField(
+                          textController: widget.otherNameController,
+                          obscureText: false,
+                          hintText: 'Full Name',
+                          icon: const Icon(Icons.person),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Invalied Input';
+                            }
+                            return null;
+                          },
+                        ),
+                        DateInputField(
+                          controller: widget.otherDateController,
+                          labelText: 'Date Of Birth',
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Invalied Input';
+                            }
+                            return null;
+                          },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 70, right: 70, top: 20),
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 10),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: anotherColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(children: <Widget>[
+                              const Icon(
+                                Icons.bloodtype,
+                                color: secondaryColor,
+                              ),
+                              DropdownButton(
+                                  iconEnabledColor: secondaryColor,
+                                  hint: Text(
+                                    widget.otherBloodGroupType.isEmpty
+                                        ? 'Select Blood Group'
+                                        : 'your blood group is  ${widget.otherBloodGroupType}',
+                                    style: TextStyle(
+                                        color:
+                                            widget.otherBloodGroupType.isEmpty
+                                                ? popColor
+                                                : Colors.black),
+                                  ),
+                                  items: widget.bloodGroup.map((value) {
+                                    return DropdownMenuItem(
+                                        value: value, child: Text(value));
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      widget.otherBloodGroupType =
+                                          value.toString();
+                                      print(widget.otherBloodGroupType);
+                                    });
+                                  }),
+                            ]),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 0.1 * LayoutSize.layoutValue!,
+                        ),
+                        SizedBox(
+                          width: 210,
+                          height: 50,
+                          child: GeneralcustomButton(
+                            text: "Request blood",
+                            onTap: () {
+                              if (widget.formKey.currentState!.validate()) {
+                                widget.formKey.currentState!.save();
+                                print(widget.otherDateController.text);
+                              }
+                            },
+                            selected: true,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -561,6 +665,111 @@ class TextField extends StatelessWidget {
         fontSize: 16,
         color: secondaryColor,
         fontWeight: FontWeight.w500,
+      ),
+    );
+  }
+}
+
+class TextInputField extends StatelessWidget {
+  const TextInputField({
+    super.key,
+    required this.textController,
+    required this.obscureText,
+    required this.hintText,
+    required this.icon,
+    required this.validator,
+    this.keyboardType,
+  });
+
+  final TextEditingController textController;
+  final bool obscureText;
+  final String hintText;
+  final Icon icon;
+  final Function validator;
+  final TextInputType? keyboardType;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 70, left: 70, top: 20),
+      child: Container(
+        padding: const EdgeInsets.only(left: 10),
+        decoration: BoxDecoration(
+          color: anotherColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: TextFormField(
+          controller: textController,
+          obscureText: obscureText,
+          keyboardType: keyboardType ?? TextInputType.emailAddress,
+          decoration: InputDecoration(
+              icon: icon,
+              iconColor: secondaryColor,
+              hintText: hintText,
+              hintStyle: const TextStyle(
+                color: popColor,
+              )),
+          validator: (value) {
+            return validator(value);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class DateInputField extends StatefulWidget {
+  final String labelText;
+  final TextEditingController controller;
+  final Function validator;
+  const DateInputField(
+      {super.key,
+      required this.labelText,
+      required this.controller,
+      required this.validator});
+
+  @override
+  _DateInputFieldState createState() => _DateInputFieldState();
+}
+
+class _DateInputFieldState extends State<DateInputField> {
+  late DateTime? _dateTime = DateTime.now();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 70, left: 70, top: 20),
+      child: Container(
+        padding: const EdgeInsets.only(left: 10),
+        decoration: BoxDecoration(
+          color: anotherColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: GestureDetector(
+          onTap: () async {
+            _dateTime = await showDatePicker(
+              context: context,
+              firstDate: DateTime(1900),
+              initialDate: DateTime.now(),
+              lastDate: DateTime.now(),
+            );
+            setState(() {
+              widget.controller.text =
+                  '${_dateTime!.year} / ${_dateTime!.month} / ${_dateTime!.day}';
+            });
+          },
+          child: AbsorbPointer(
+            child: TextFormField(
+              validator: (value) => widget.validator(value),
+              controller: widget.controller,
+              decoration: InputDecoration(
+                iconColor: secondaryColor,
+                hintText: widget.labelText,
+                hintStyle: const TextStyle(color: popColor),
+                icon: const Icon(Icons.calendar_today),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

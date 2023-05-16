@@ -5,22 +5,30 @@ import 'package:flutter/material.dart';
 
 import '../../../shared/component/constants.dart';
 import '../../../shared/component/device_size.dart';
+import '../../../shared/component/helperfunctions.dart';
+import '../../home_screen/home_body.dart';
 import 'requests_cards.dart';
 
 class RequestsSideBarBody extends StatefulWidget {
-  const RequestsSideBarBody({
-    Key? key,
-    required this.pageTitle,
-    required this.doneOntap,
-    required this.buttonCaption,
-    required this.backOntap,
-  }) : super(key: key);
+  const RequestsSideBarBody(
+      {Key? key,
+      required this.dateText,
+      required this.personName,
+      required this.time,
+      required this.personLocation,
+      required this.status,
+      required this.personImage,
+      required this.onTap})
+      : super(key: key);
 
-  final String? pageTitle;
+  final VoidCallback? onTap;
 
-  final String? buttonCaption;
-  final VoidCallback? doneOntap;
-  final VoidCallback? backOntap;
+  final String? dateText;
+  final String? personName;
+  final String? time;
+  final String? personLocation;
+  final bool? status;
+  final String? personImage;
   @override
   State<RequestsSideBarBody> createState() => _RequestsSideBarBodyState();
 }
@@ -45,12 +53,14 @@ class _RequestsSideBarBodyState extends State<RequestsSideBarBody> {
           ),
           leading: BackButton(
             color: secondaryColor,
-            onPressed: widget.backOntap,
+            onPressed: () {
+              nextScreenRep(context, const Home());
+            },
           ),
           centerTitle: true,
-          title: Text(
-            widget.pageTitle!,
-            style: const TextStyle(
+          title: const Text(
+            'MY Requests',
+            style: TextStyle(
               fontSize: 36,
               color: secondaryColor,
               fontWeight: FontWeight.w500,
@@ -65,13 +75,14 @@ class _RequestsSideBarBodyState extends State<RequestsSideBarBody> {
             return Padding(
                 padding:
                     EdgeInsets.only(bottom: 0.08 * LayoutSize.layoutValue!),
-                child: const RequestCards(
-                  dateText: '24/12/2023',
-                  personName: 'Ahmed zena',
-                  time: '3 : 00 Am',
-                  personLocation: '123,xyz,apt',
-                  status: true,
-                  personImage: 'assets/O.png',
+                child: RequestCards(
+                  dateText: widget.dateText,
+                  personName: widget.personName,
+                  time: widget.time,
+                  personLocation: widget.personLocation,
+                  status: widget.status,
+                  personImage: widget.personImage,
+                  onTap: widget.onTap,
                 ));
           },
         ));

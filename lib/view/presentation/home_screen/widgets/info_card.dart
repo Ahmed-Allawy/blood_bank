@@ -21,6 +21,7 @@ class _InfoCardsState extends State<InfoCards> {
       child: CarouselSlider(
           unlimitedMode: true,
           slideIndicator: CircularSlideIndicator(
+              padding: const EdgeInsets.only(bottom: 5),
               indicatorBackgroundColor: Colors.black,
               currentIndicatorColor: secondaryColor),
           enableAutoSlider: true,

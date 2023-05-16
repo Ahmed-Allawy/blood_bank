@@ -17,12 +17,18 @@ class _RequestsSideBarViewState extends State<RequestsSideBarView> {
   @override
   Widget build(BuildContext context) {
     return RequestsSideBarBody(
-      pageTitle: 'Requests',
-      doneOntap: () {},
-      backOntap: () {
-        nextScreenRep(context, const Home());
-      },
-      buttonCaption: 'Back',
+      dateText: '24/12/2023',
+      personName: 'Ahmed zena',
+      time: '3 : 00 Am',
+      personLocation: '123,xyz,apt',
+      status: false,
+      personImage: 'assets/O.png',
+      onTap: () {},
     );
   }
 }
+
+//// get my requests
+///{
+///date, time, location, name(self or other), blood group, status(accepted or pending)
+///} i can remove pending requests

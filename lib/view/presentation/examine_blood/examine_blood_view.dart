@@ -14,16 +14,11 @@ class ExamineBloodView extends StatefulWidget {
 class _ExamineBloodViewState extends State<ExamineBloodView> {
   @override
   Widget build(BuildContext context) {
-    return ExamineBlood(
-      pageTitle: "Examine Blood",
+    return const ExamineBlood(
       email: 'ahmed@gmail.com',
       location: 'phaqos-elshaqia',
-      phoneNumber: '0102332433',
-      personName: "Ahmed Allawy Zena",
-      backOntap: () {
-        nextScreenRep(context, const BloodBankView());
-      },
-      ontap: () {},
+      personName: 'Ahmed Zena',
+      phoneNumber: "Ahmed Allawy Zena",
     );
   }
 }
