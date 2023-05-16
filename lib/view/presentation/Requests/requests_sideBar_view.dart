@@ -49,3 +49,20 @@ class _RequestsSideBarViewState extends State<RequestsSideBarView> {
 // else {
 //   print(response.reasonPhrase);
 // }
+
+//this to remove the donate requet
+// var headers = {
+//   'Authorization': 'Token 08fda60e13a1e8adff11b07089d40db8fa7e03ec'
+// };
+// var request = http.MultipartRequest('POST', Uri.parse('http://127.0.0.1:8000/blood/5/donate-delete/'));
+
+// request.headers.addAll(headers);
+
+// http.StreamedResponse response = await request.send();
+
+// if (response.statusCode == 200) {
+//   print(await response.stream.bytesToString());
+// }
+// else {
+//   print(response.reasonPhrase);
+// }
