@@ -1,6 +1,6 @@
 // ignore_for_file: unnecessary_const
 
-import 'package:blood_bank/view/presentation/home_screen/home_body.dart';
+import 'package:blood_bank/view/presentation/auth/login/login.dart';
 import 'package:blood_bank/view/shared/component/constants.dart';
 import 'package:blood_bank/view/shared/component/device_size.dart';
 import 'package:dots_indicator/dots_indicator.dart';
@@ -69,7 +69,7 @@ class _OnBoardingViewBodyState extends State<OnBoardingViewBody> {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    Get.to(() => const Home(),
+                    Get.to(() => const LogIn(),
                         transition: Transition.rightToLeft,
                         duration: const Duration(milliseconds: 500));
                   });
@@ -99,7 +99,7 @@ class _OnBoardingViewBodyState extends State<OnBoardingViewBody> {
                         duration: const Duration(milliseconds: 500),
                         curve: Curves.easeIn);
                   } else {
-                    Get.to(() => const Home(),
+                    Get.to(() => const LogIn(),
                         transition: Transition.rightToLeft,
                         duration: const Duration(milliseconds: 500));
                   }

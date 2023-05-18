@@ -1,5 +1,8 @@
 // ignore_for_file: library_private_types_in_public_api, unused_field
 
+import 'package:http/http.dart' as http;
+
+import 'package:blood_bank/model/model.dart';
 import 'package:blood_bank/view/presentation/auth/login/login.dart';
 import 'package:blood_bank/view/shared/component/components.dart';
 import 'package:blood_bank/view/shared/component/constants.dart';
@@ -18,7 +21,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  String? phoneNumber;
+  int phoneNumber = 0;
   String bloodGroupType = '';
   final passwordController = TextEditingController();
   final nameController = TextEditingController();
@@ -29,6 +32,15 @@ class _RegisterState extends State<Register> {
   List bloodGroup = ['AB+', 'AB-', 'A', 'AA', 'B', 'BB', 'O', 'OO'];
   @override
   Widget build(BuildContext context) {
+    User user = User(
+        email: emailController.text,
+        password: passwordController.text,
+        Fname: nameController.text,
+        DateOfBirth: dateController.text,
+        phone_num: phoneNumber,
+        location: locationController.text,
+        blood_group: bloodGroupType);
+
     LayoutSize().init(context);
     return Scaffold(
       backgroundColor: primaryColor,
@@ -99,7 +111,8 @@ class _RegisterState extends State<Register> {
                           borderSide: BorderSide(),
                         ),
                       ),
-                      onChanged: (value) => phoneNumber = value.completeNumber,
+                      onChanged: (value) =>
+                          phoneNumber = int.parse(value.completeNumber),
                       initialCountryCode: 'EG',
                     ),
                   ),
@@ -161,7 +174,6 @@ class _RegisterState extends State<Register> {
                           onChanged: (value) {
                             setState(() {
                               bloodGroupType = value.toString();
-                              print(bloodGroupType);
                             });
                           }),
                     ]),
@@ -178,8 +190,15 @@ class _RegisterState extends State<Register> {
                     onTap: () {
                       if (formKey.currentState!.validate()) {
                         formKey.currentState!.save();
+                        print(emailController.text);
+                        print(passwordController.text);
+                        print(nameController.text);
                         print(dateController.text);
-                        nextScreen(context, const Home());
+                        print(locationController.text);
+                        print(phoneNumber);
+                        print(bloodGroupType);
+                        signup(user);
+                        //nextScreen(context, const Home());
                       }
                     },
                     selected: true,
@@ -208,5 +227,22 @@ class _RegisterState extends State<Register> {
         ),
       ),
     );
+  }
+}
+
+void signup(User user) async {
+  var headers = {'Content-Type': 'application/json'};
+  var request =
+      http.Request('POST', Uri.parse('http://127.0.0.1:8000/singup/'));
+  request.body = user.toJson();
+  print(user.toJson());
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    print(await response.stream.bytesToString());
+  } else {
+    print(response.reasonPhrase);
   }
 }

@@ -143,10 +143,7 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
                           onTapButton: () {
                             setState(() {
                               if (widget.requestAccept! == true) {
-                                print("request accepted");
-                              } else {
-                                print("pationt toke the blood");
-                              }
+                              } else {}
                             });
                           },
                         ));

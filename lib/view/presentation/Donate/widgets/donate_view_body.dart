@@ -81,7 +81,6 @@ class _DonateViewBodyState extends State<DonateViewBody> {
             rightButtonOntap: () {
               setState(() {
                 _pageNumber = false;
-                print('pageNumber is false');
               });
             },
             leftButtonCaption: 'Self',
@@ -89,7 +88,6 @@ class _DonateViewBodyState extends State<DonateViewBody> {
             leftButtonOntap: () {
               setState(() {
                 _pageNumber = true;
-                print('pageNumber is true');
               });
             },
           ),
@@ -179,7 +177,6 @@ class _DonateViewBodyState extends State<DonateViewBody> {
                                   onChanged: (value) {
                                     setState(() {
                                       otherBloodGroupType = value.toString();
-                                      print(otherBloodGroupType);
                                     });
                                   }),
                             ]),
@@ -196,7 +193,6 @@ class _DonateViewBodyState extends State<DonateViewBody> {
                             onTap: () {
                               if (formKey.currentState!.validate()) {
                                 formKey.currentState!.save();
-                                print(otherDateController.text);
                               }
                             },
                             selected: true,

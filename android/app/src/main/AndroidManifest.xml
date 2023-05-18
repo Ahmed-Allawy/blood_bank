@@ -2,7 +2,7 @@
     package="com.example.blood_bank">
    <application
         android:label="blood_bank"
-        android:name="${applicationName}"
+        android:name="blood_bank"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

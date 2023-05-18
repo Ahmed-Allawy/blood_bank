@@ -8,6 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import '../../../shared/component/helperfunctions.dart';
 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import '../../../shared/network/local/cach_helper.dart';
+
 class LogIn extends StatefulWidget {
   const LogIn({super.key});
 
@@ -16,9 +21,10 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
-  String? phoneNumber;
+  int phoneNumber = 0;
   final passwordController = TextEditingController();
   var formKey = GlobalKey<FormState>();
+  bool reqstatus = false;
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
@@ -61,7 +67,8 @@ class _LogInState extends State<LogIn> {
                           borderSide: BorderSide(),
                         ),
                       ),
-                      onChanged: (value) => phoneNumber = value.completeNumber,
+                      onChanged: (value) =>
+                          phoneNumber = int.parse(value.completeNumber),
                       initialCountryCode: 'EG',
                     ),
                   ),
@@ -92,15 +99,33 @@ class _LogInState extends State<LogIn> {
                   width: 210,
                   height: 50,
                   child: GeneralcustomButton(
-                    text: "Next",
+                    text: "LogIn",
+                    selected: true,
                     onTap: () {
                       if (formKey.currentState!.validate()) {
-                        formKey.currentState!.save();
-                        nextScreen(context, const Home());
+                        login(phoneNumber, passwordController.text)
+                            .then((value) {
+                          if (value) {
+                            nextScreen(context, const Home());
+                          } else {
+                            setState(() {
+                              reqstatus = true;
+                            });
+                          }
+                        });
                       }
                     },
-                    selected: true,
                   ),
+                ),
+                Visibility(
+                  visible: reqstatus,
+                  child: const Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: Text(
+                        'Invalid phone number and password\ntry signup instead',
+                        style: TextStyle(color: anotherColor),
+                        textAlign: TextAlign.center,
+                      )),
                 ),
                 SizedBox(
                   height: 0.16 * LayoutSize.layoutValue!,
@@ -125,5 +150,35 @@ class _LogInState extends State<LogIn> {
         ),
       ),
     );
+  }
+}
+
+Future<bool> login(phone, pass) async {
+  var headers = {'Content-Type': 'application/json'};
+  var request = http.Request('POST', Uri.parse('http://127.0.0.1:8000/login/'));
+  //here I send the password and the phone number for login by passing them to the body
+  request.body = json.encode({"password": pass, "phone_num": phone});
+  request.headers.addAll(headers);
+  print(request.body);
+  http.StreamedResponse response = await request.send();
+  //here is the response
+  if (response.statusCode == 200) {
+    String body = await response.stream.bytesToString();
+    var responseJason = jsonDecode(body);
+    print(responseJason);
+    if (responseJason['message'] != 'Invalid phone number and password') {
+      //here I save the token to var you can save it to sharedprefrence
+      var token = responseJason['token'];
+
+      CacheHelper.saveData(key: 'token', value: token);
+      print(body);
+      print("Token$token");
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    print('sfsdfsfdsfsfdagasdgasgrggrgdfgasdgrgvrdcf');
+    return false;
   }
 }

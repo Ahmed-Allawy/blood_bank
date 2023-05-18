@@ -116,7 +116,6 @@ class _ExamineBloodState extends State<ExamineBlood> {
                                 onChanged: (value) {
                                   setState(() {
                                     bloodGroupType = value.toString();
-                                    print(bloodGroupType);
                                   });
                                 }),
                           ]),

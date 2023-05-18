@@ -33,12 +33,10 @@ class HistoryDonatesCards extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   TextField(
                     text: "Date: $dateText",
-                  ),
-                  SizedBox(
-                    width: (LayoutSize.layoutValue! * 0.9) / 4.5,
                   ),
                   TextField(
                     text: "Receiver ID : $personName",

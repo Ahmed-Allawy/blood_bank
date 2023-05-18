@@ -75,7 +75,7 @@ class _RequestCardsState extends State<RequestCards> {
                     width: 125,
                     height: 37,
                     child: GeneralcustomButton(
-                      text: widget.status! ? "View" : "Cancel",
+                      text: widget.status! ? "Done" : "Cancel",
                       onTap: widget.onTap,
                       selected: true,
                     ),

@@ -1,14 +1,10 @@
 // ignore_for_file: unused_element, non_constant_identifier_names, avoid_print, library_private_types_in_public_api
 
 import 'package:blood_bank/view/shared/component/constants.dart';
-import 'package:flutter/gestures.dart';
 
 import 'package:flutter/material.dart';
 
-import '../../presentation/auth/login/login.dart';
-import '../../presentation/home_screen/home_body.dart';
 import 'device_size.dart';
-import 'helperfunctions.dart';
 
 // ignore: must_be_immutable
 class GeneralcustomButton extends StatelessWidget {
@@ -597,12 +593,10 @@ class BloodBankCards extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     TextField(
                       text: "Date: $dateText",
-                    ),
-                    SizedBox(
-                      width: (LayoutSize.layoutValue! * 0.9) / 4.5,
                     ),
                     TextField(
                       text: personName,
@@ -637,9 +631,8 @@ class BloodBankCards extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-          bottom: 2,
-          right: 40,
+        Padding(
+          padding: const EdgeInsets.only(left: 220, top: 20),
           child: Image.asset(
             personImage!,
             width: 88,
@@ -754,7 +747,7 @@ class _DateInputFieldState extends State<DateInputField> {
             );
             setState(() {
               widget.controller.text =
-                  '${_dateTime!.year} / ${_dateTime!.month} / ${_dateTime!.day}';
+                  '${_dateTime!.year}-${_dateTime!.month}-${_dateTime!.day}';
             });
           },
           child: AbsorbPointer(

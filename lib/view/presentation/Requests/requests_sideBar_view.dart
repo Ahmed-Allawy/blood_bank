@@ -1,7 +1,5 @@
 // ignore_for_file: file_names
 
-import 'package:blood_bank/view/presentation/home_screen/home_body.dart';
-import 'package:blood_bank/view/shared/component/helperfunctions.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/requests_sideBar_view_body.dart';
@@ -30,7 +28,7 @@ class _RequestsSideBarViewState extends State<RequestsSideBarView> {
 
 //// get my requests
 ///{
-///date, time, location, name(self or other), blood group, status(accepted or pending)
+///date, time, hospital location, name(self or other), blood group, status(accepted or pending)
 
 ///} i can remove pending requests
 //this for removeing the request 

@@ -2,9 +2,6 @@
 // ignore: file_names
 // ignore_for_file: file_names, avoid_print
 
-import 'package:blood_bank/view/presentation/home_screen/home_body.dart';
-import 'package:blood_bank/view/shared/component/components.dart';
-import 'package:blood_bank/view/shared/component/helperfunctions.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/donate_view_body.dart';

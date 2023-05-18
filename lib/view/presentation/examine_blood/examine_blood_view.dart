@@ -1,5 +1,3 @@
-import 'package:blood_bank/view/presentation/blood_bank/blood_bank_view.dart';
-import 'package:blood_bank/view/shared/component/helperfunctions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'widgets/examine_blood_view_body.dart';
@@ -18,7 +16,7 @@ class _ExamineBloodViewState extends State<ExamineBloodView> {
       email: 'ahmed@gmail.com',
       location: 'phaqos-elshaqia',
       personName: 'Ahmed Zena',
-      phoneNumber: "Ahmed Allawy Zena",
+      phoneNumber: "01023546",
     );
   }
 }

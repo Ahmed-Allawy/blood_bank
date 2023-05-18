@@ -1,13 +1,13 @@
 import 'package:blood_bank/view/presentation/Splash_Screen/splash_view.dart';
-import 'package:blood_bank/view/presentation/auth/login/login.dart';
-import 'package:blood_bank/view/presentation/auth/register/register.dart';
-import 'package:blood_bank/view/presentation/home_screen/home_body.dart';
 import 'package:blood_bank/view/shared/component/constants.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 
+import 'view/shared/network/local/cach_helper.dart';
+
 void main() {
+  CacheHelper.init();
   runApp(DevicePreview(builder: (context) => const MyApp()));
 }
 
@@ -23,6 +23,6 @@ class MyApp extends StatelessWidget {
         ),
         // builder: DevicePreview.appBuilder,
         debugShowCheckedModeBanner: false,
-        home: const Home());
+        home: const SplashView());
   }
 }
