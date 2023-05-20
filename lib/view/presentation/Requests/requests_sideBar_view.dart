@@ -2,7 +2,10 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../model/bloodImages.dart';
+import '../../shared/network/local/cach_helper.dart';
 import 'widgets/requests_sideBar_view_body.dart';
+import 'package:http/http.dart' as http;
 
 class RequestsSideBarView extends StatefulWidget {
   const RequestsSideBarView({super.key});
@@ -14,15 +17,7 @@ class RequestsSideBarView extends StatefulWidget {
 class _RequestsSideBarViewState extends State<RequestsSideBarView> {
   @override
   Widget build(BuildContext context) {
-    return RequestsSideBarBody(
-      dateText: '24/12/2023',
-      personName: 'Ahmed zena',
-      time: '3 : 00 Am',
-      personLocation: '123,xyz,apt',
-      status: false,
-      personImage: 'assets/O.png',
-      onTap: () {},
-    );
+    return RequestsSideBarBody();
   }
 }
 
@@ -31,7 +26,7 @@ class _RequestsSideBarViewState extends State<RequestsSideBarView> {
 ///date, time, hospital location, name(self or other), blood group, status(accepted or pending)
 
 ///} i can remove pending requests
-//this for removeing the request 
+//this for removeing the request
 // var headers = {
 //   'Authorization': 'Token 08fda60e13a1e8adff11b07089d40db8fa7e03ec'
 // };
@@ -64,3 +59,22 @@ class _RequestsSideBarViewState extends State<RequestsSideBarView> {
 // else {
 //   print(response.reasonPhrase);
 // }
+
+void getUserBloodRequest() async {
+  var token = CacheHelper.getData(key: 'token');
+  print(token);
+  var headers = {'Authorization': 'Token $token'};
+  var request = http.Request(
+      'GET', Uri.parse('http://127.0.0.1:8000/blood/user/blood-requests/'));
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    var body = await response.stream.bytesToString();
+    print(body);
+  } else {
+    print(response.reasonPhrase);
+  }
+}

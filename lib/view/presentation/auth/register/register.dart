@@ -1,5 +1,7 @@
-// ignore_for_file: library_private_types_in_public_api, unused_field
+// ignore_for_file: library_private_types_in_public_api, unused_field, use_build_context_synchronously
 
+import 'package:blood_bank/view/shared/network/local/cach_helper.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:blood_bank/model/model.dart';
@@ -29,7 +31,7 @@ class _RegisterState extends State<Register> {
   final locationController = TextEditingController();
   final dateController = TextEditingController();
   var formKey = GlobalKey<FormState>();
-  List bloodGroup = ['AB+', 'AB-', 'A', 'AA', 'B', 'BB', 'O', 'OO'];
+  List bloodGroup = ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-'];
   @override
   Widget build(BuildContext context) {
     User user = User(
@@ -111,8 +113,9 @@ class _RegisterState extends State<Register> {
                           borderSide: BorderSide(),
                         ),
                       ),
-                      onChanged: (value) =>
-                          phoneNumber = int.parse(value.completeNumber),
+                      onChanged: (value) => setState(() {
+                        phoneNumber = int.parse(value.completeNumber);
+                      }),
                       initialCountryCode: 'EG',
                     ),
                   ),
@@ -189,16 +192,20 @@ class _RegisterState extends State<Register> {
                     text: "Confirm",
                     onTap: () {
                       if (formKey.currentState!.validate()) {
-                        formKey.currentState!.save();
-                        print(emailController.text);
-                        print(passwordController.text);
-                        print(nameController.text);
-                        print(dateController.text);
-                        print(locationController.text);
-                        print(phoneNumber);
-                        print(bloodGroupType);
-                        signup(user);
-                        //nextScreen(context, const Home());
+                        CacheHelper.saveData(
+                            key: 'userEmail', value: emailController.text);
+                        CacheHelper.saveData(
+                            key: 'userPhoneNumber', value: phoneNumber);
+                        CacheHelper.saveData(
+                            key: 'userName', value: nameController.text);
+                        CacheHelper.saveData(
+                            key: 'userDate', value: dateController.text);
+                        CacheHelper.saveData(
+                            key: 'userLocation',
+                            value: locationController.text);
+                        CacheHelper.saveData(
+                            key: 'userBloodType', value: bloodGroupType);
+                        signup(user, context);
                       }
                     },
                     selected: true,
@@ -230,7 +237,7 @@ class _RegisterState extends State<Register> {
   }
 }
 
-void signup(User user) async {
+signup(User user, BuildContext context) async {
   var headers = {'Content-Type': 'application/json'};
   var request =
       http.Request('POST', Uri.parse('http://127.0.0.1:8000/singup/'));
@@ -240,8 +247,9 @@ void signup(User user) async {
 
   http.StreamedResponse response = await request.send();
 
-  if (response.statusCode == 200) {
+  if (response.statusCode == 201) {
     print(await response.stream.bytesToString());
+    nextScreen(context, const Home());
   } else {
     print(response.reasonPhrase);
   }

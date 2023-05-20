@@ -1,10 +1,13 @@
+import 'package:blood_bank/model/bloodImages.dart';
+import 'package:blood_bank/view/presentation/auth/login/login.dart';
 import 'package:blood_bank/view/presentation/history/history_view.dart';
 import 'package:blood_bank/view/shared/component/components.dart';
 import 'package:blood_bank/view/shared/component/constants.dart';
 import 'package:blood_bank/view/shared/component/device_size.dart';
 import 'package:blood_bank/view/shared/component/helperfunctions.dart';
+import 'package:blood_bank/view/shared/network/local/cach_helper.dart';
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
 import '../../Requests/requests_sideBar_view.dart';
 
 class NaveBar extends StatefulWidget {
@@ -29,13 +32,14 @@ class _NaveBarState extends State<NaveBar> {
       child: Column(
         children: <Widget>[
           Image.asset(
-            'assets/O.png',
+            BloodImages(CacheHelper.getData(key: 'userBloodType'))
+                .getBloodImages(),
             width: 88,
             height: 119,
           ),
-          const Text(
-            'Ahmed allawy',
-            style: TextStyle(
+          Text(
+            CacheHelper.getData(key: 'userName'),
+            style: const TextStyle(
               fontSize: 18,
               color: secondaryColor,
               fontWeight: FontWeight.w500,
@@ -71,11 +75,32 @@ class _NaveBarState extends State<NaveBar> {
             child: GeneralcustomButton(
               selected: true,
               text: 'Sign out',
-              onTap: () {},
+              onTap: () {
+                logout();
+                CacheHelper.removeData(key: 'token');
+                nextScreen(context, LogIn());
+              },
             ),
           ),
         ],
       ),
     );
+  }
+}
+
+logout() async {
+  var token = CacheHelper.getData(key: 'token');
+  var headers = {'Authorization': 'Token $token'};
+  var request =
+      http.Request('POST', Uri.parse('http://127.0.0.1:8000/logout/'));
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    print(await response.stream.bytesToString());
+  } else {
+    print(response.reasonPhrase);
   }
 }

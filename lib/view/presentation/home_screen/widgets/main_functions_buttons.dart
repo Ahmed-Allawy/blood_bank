@@ -6,6 +6,7 @@ import 'package:blood_bank/view/shared/component/helperfunctions.dart';
 import 'package:flutter/material.dart';
 
 import '../../../shared/component/components.dart';
+import '../../../shared/network/local/cach_helper.dart';
 
 class MainFunctionsButtons extends StatefulWidget {
   const MainFunctionsButtons({Key? key}) : super(key: key);
@@ -18,6 +19,7 @@ class _MainFunctionsButtonsState extends State<MainFunctionsButtons> {
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
+
     return Column(children: <Widget>[
       Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
         MainButton(
@@ -45,23 +47,6 @@ class _MainFunctionsButtonsState extends State<MainFunctionsButtons> {
       SizedBox(
         height: 0.1 * LayoutSize.layoutValue!,
       ),
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-        MainButton(
-          text: 'Find A\nDonor',
-          image: 'assets/find.png',
-          onTap: () {},
-        ),
-        SizedBox(
-          width: 0.1 * LayoutSize.layoutValue!,
-        ),
-        MainButton(
-          text: 'Blood Bank',
-          image: 'assets/blood_bank.png',
-          onTap: () {
-            nextScreen(context, const BloodBankView());
-          },
-        ),
-      ]),
     ]);
   }
 }

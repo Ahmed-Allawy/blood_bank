@@ -1,17 +1,20 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:blood_bank/view/presentation/Blood_Request/Blood_request_view.dart';
 import 'package:flutter/material.dart';
 
 import '../../../shared/component/components.dart';
 import '../../../shared/component/constants.dart';
 import '../../../shared/component/device_size.dart';
 import '../../../shared/component/helperfunctions.dart';
+import '../../../shared/network/local/cach_helper.dart';
 import '../../home_screen/home_body.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class DonateViewBody extends StatefulWidget {
   const DonateViewBody({
     Key? key,
-    required this.doneOntap,
     required this.location,
     required this.phoneNumber,
     required this.email,
@@ -22,7 +25,7 @@ class DonateViewBody extends StatefulWidget {
   final String? location;
   final String? phoneNumber;
   final String? email;
-  final VoidCallback? doneOntap;
+
   final String? imageBlood;
   final String? personName;
   @override
@@ -33,10 +36,22 @@ class _DonateViewBodyState extends State<DonateViewBody> {
   bool _pageNumber = true;
   /////// other anfo
   String otherBloodGroupType = '';
+  String CampagainName = '';
   final otherNameController = TextEditingController();
   final otherDateController = TextEditingController();
+  final otherLocationController = TextEditingController();
   var formKey = GlobalKey<FormState>();
-  List bloodGroup = ['AB+', 'AB-', 'A', 'AA', 'B', 'BB', 'O', 'OO'];
+  List bloodGroup = ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-'];
+  List campagain = [
+    'gegergreg',
+    'dggfegf-',
+    'A+',
+    'fgd-',
+    'B+',
+    'B-',
+    'O+',
+    'O-'
+  ];
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
@@ -91,6 +106,40 @@ class _DonateViewBodyState extends State<DonateViewBody> {
               });
             },
           ),
+          Padding(
+            padding: const EdgeInsets.only(left: 70, right: 70, top: 60),
+            child: Container(
+              padding: const EdgeInsets.only(left: 10),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: anotherColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(children: <Widget>[
+                const Icon(
+                  Icons.location_on,
+                  color: secondaryColor,
+                ),
+                DropdownButton(
+                    iconEnabledColor: secondaryColor,
+                    hint: Text(
+                      CampagainName.isEmpty
+                          ? 'Select campagain'
+                          : ' $CampagainName',
+                      style: TextStyle(
+                          color: campagain.isEmpty ? popColor : Colors.black),
+                    ),
+                    items: campagain.map((value) {
+                      return DropdownMenuItem(value: value, child: Text(value));
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        CampagainName = value.toString();
+                      });
+                    }),
+              ]),
+            ),
+          ),
           if (_pageNumber)
             Expanded(
               child: SingleChildScrollView(
@@ -104,7 +153,15 @@ class _DonateViewBodyState extends State<DonateViewBody> {
                     phoneNumber: widget.phoneNumber!,
                     email: widget.email!,
                     buttonCaption: 'NEXT',
-                    ontap: widget.doneOntap,
+                    ontap: () {
+                      sendUserDonateRequest(
+                          widget.personName!,
+                          widget.location!,
+                          context,
+                          widget.imageBlood!,
+                          CampagainName);
+                      CampagainName = '';
+                    },
                     imageBlood: widget.imageBlood,
                     personName: widget.personName,
                   ),
@@ -134,9 +191,11 @@ class _DonateViewBodyState extends State<DonateViewBody> {
                             return null;
                           },
                         ),
-                        DateInputField(
-                          controller: otherDateController,
-                          labelText: 'Date Of Birth',
+                        TextInputField(
+                          textController: otherLocationController,
+                          obscureText: false,
+                          hintText: 'location EX: zagazig-sharkia-egypt',
+                          icon: const Icon(Icons.location_on),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Invalied Input';
@@ -193,6 +252,17 @@ class _DonateViewBodyState extends State<DonateViewBody> {
                             onTap: () {
                               if (formKey.currentState!.validate()) {
                                 formKey.currentState!.save();
+                                sendOtherDonateRequest(
+                                    otherNameController.text,
+                                    otherLocationController.text,
+                                    context,
+                                    otherBloodGroupType,
+                                    CampagainName);
+                                otherBloodGroupType = '';
+                                otherDateController.clear();
+                                otherLocationController.clear();
+                                CampagainName = '';
+                                otherNameController.clear();
                               }
                             },
                             selected: true,
@@ -216,3 +286,127 @@ class _DonateViewBodyState extends State<DonateViewBody> {
 /// name,
 /// date of birth
 /// } at the same user(self) info
+sendUserDonateRequest(String Fname, String location, BuildContext context,
+    String bloodType, String campagain) async {
+  var token = CacheHelper.getData(key: 'token');
+  var headers = {
+    'Authorization': 'Token $token',
+    'Content-Type': 'application/json'
+  };
+  var request = http.Request(
+      'POST', Uri.parse('http://127.0.0.1:8000/blood/donate-self/'));
+  request.body = json.encode({
+    'Fname': Fname,
+    'location': location,
+    "blood_group": bloodType,
+    'campagain': campagain
+  });
+  print(request.body);
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 201) {
+    //print(await response.stream.bytesToString());
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.green,
+          title: Text('Accepted'),
+          content: Text('Your request has been created !'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  } else {
+    print(response.reasonPhrase);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.red,
+          title: Text('Declined'),
+          content: Text('Your request has been refuesd !'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+sendOtherDonateRequest(String Fname, String location, BuildContext context,
+    String bloodType, String campagain) async {
+  var token = CacheHelper.getData(key: 'token');
+  var headers = {
+    'Authorization': 'Token $token',
+    'Content-Type': 'application/json'
+  };
+  var request = http.Request(
+      'POST', Uri.parse('http://127.0.0.1:8000/blood/donate-other/'));
+  request.body = json.encode({
+    'Fname': Fname,
+    'location': location,
+    "blood_group": bloodType,
+    'campagain': campagain
+  });
+  print(request.body);
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 201) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.green,
+          title: Text('Accepted'),
+          content: Text('Your request has been created !'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  } else {
+    print(response.reasonPhrase);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.red,
+          title: Text('Declined'),
+          content: Text('Your request has been refuesd !'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}

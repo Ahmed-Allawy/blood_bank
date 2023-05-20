@@ -1,12 +1,15 @@
 // ignore_for_file: unnecessary_const
 
 import 'package:blood_bank/view/presentation/auth/login/login.dart';
+import 'package:blood_bank/view/presentation/blood_bank/blood_bank_view.dart';
+import 'package:blood_bank/view/presentation/home_screen/home_body.dart';
 import 'package:blood_bank/view/shared/component/constants.dart';
 import 'package:blood_bank/view/shared/component/device_size.dart';
+import 'package:blood_bank/view/shared/network/local/cach_helper.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:http/http.dart' as http;
 import '../../../shared/component/components.dart';
 import 'custom_page_view.dart';
 
@@ -20,6 +23,7 @@ class _OnBoardingViewBodyState extends State<OnBoardingViewBody> {
   PageController? pageController;
   double _screenWidth = 0;
   double _screenHeight = 0;
+  bool isUserAdmin = false;
   @override
   void initState() {
     // WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -30,6 +34,7 @@ class _OnBoardingViewBodyState extends State<OnBoardingViewBody> {
         setState(() {});
       });
     super.initState();
+    isAdmin().then((value) => isUserAdmin = value);
   }
 
   @override
@@ -69,9 +74,20 @@ class _OnBoardingViewBodyState extends State<OnBoardingViewBody> {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    Get.to(() => const LogIn(),
-                        transition: Transition.rightToLeft,
-                        duration: const Duration(milliseconds: 500));
+                    print(CacheHelper.getData(key: 'token'));
+                    if (CacheHelper.getData(key: 'token') == null) {
+                      Get.to(() => const LogIn(),
+                          transition: Transition.rightToLeft,
+                          duration: const Duration(milliseconds: 500));
+                    } else {
+                      !isUserAdmin
+                          ? Get.to(() => const Home(),
+                              transition: Transition.rightToLeft,
+                              duration: const Duration(milliseconds: 500))
+                          : Get.to(() => const BloodBankView(),
+                              transition: Transition.rightToLeft,
+                              duration: const Duration(milliseconds: 500));
+                    }
                   });
                 },
                 child: const Text(
@@ -99,9 +115,19 @@ class _OnBoardingViewBodyState extends State<OnBoardingViewBody> {
                         duration: const Duration(milliseconds: 500),
                         curve: Curves.easeIn);
                   } else {
-                    Get.to(() => const LogIn(),
-                        transition: Transition.rightToLeft,
-                        duration: const Duration(milliseconds: 500));
+                    if (CacheHelper.getData(key: 'token') == null) {
+                      Get.to(() => const LogIn(),
+                          transition: Transition.rightToLeft,
+                          duration: const Duration(milliseconds: 500));
+                    } else {
+                      !isUserAdmin
+                          ? Get.to(() => const Home(),
+                              transition: Transition.rightToLeft,
+                              duration: const Duration(milliseconds: 500))
+                          : Get.to(() => const BloodBankView(),
+                              transition: Transition.rightToLeft,
+                              duration: const Duration(milliseconds: 500));
+                    }
                   }
                 });
               },
@@ -115,5 +141,26 @@ class _OnBoardingViewBodyState extends State<OnBoardingViewBody> {
         ],
       ),
     );
+  }
+}
+
+Future<bool> isAdmin() async {
+  var token = CacheHelper.getData(key: 'token');
+  print(token);
+  var headers = {'Authorization': 'Token $token'};
+  var request =
+      http.Request('GET', Uri.parse('http://127.0.0.1:8000/isadmin/'));
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    var body = await response.stream.bytesToString();
+    print(body);
+    return body == 'true'; // Convert response to boolean value
+  } else {
+    print(response.reasonPhrase);
+    return false; // Return false if request failed
   }
 }

@@ -6,7 +6,10 @@ import '../../../shared/component/components.dart';
 import '../../../shared/component/constants.dart';
 import '../../../shared/component/device_size.dart';
 import '../../../shared/component/helperfunctions.dart';
+import '../../../shared/network/local/cach_helper.dart';
 import '../../home_screen/home_body.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class BloodRequestViewBody extends StatefulWidget {
   const BloodRequestViewBody({
@@ -34,9 +37,9 @@ class _BloodRequestViewBodyState extends State<BloodRequestViewBody> {
   /////// other anfo
   String otherBloodGroupType = '';
   final otherNameController = TextEditingController();
-  final otherDateController = TextEditingController();
+  final otherLocationController = TextEditingController();
   var formKey = GlobalKey<FormState>();
-  List bloodGroup = ['AB+', 'AB-', 'A', 'AA', 'B', 'BB', 'O', 'OO'];
+  List bloodGroup = ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-'];
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
@@ -134,9 +137,11 @@ class _BloodRequestViewBodyState extends State<BloodRequestViewBody> {
                             return null;
                           },
                         ),
-                        DateInputField(
-                          controller: otherDateController,
-                          labelText: 'Date Of Birth',
+                        TextInputField(
+                          textController: otherLocationController,
+                          obscureText: false,
+                          hintText: 'location EX: zagazig-sharkia-egypt',
+                          icon: const Icon(Icons.location_on),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Invalied Input';
@@ -192,8 +197,17 @@ class _BloodRequestViewBodyState extends State<BloodRequestViewBody> {
                             text: "Request blood",
                             onTap: () {
                               if (formKey.currentState!.validate()) {
-                                formKey.currentState!.save();
+                                sendOtherBloodRequest(
+                                    otherNameController.text,
+                                    otherLocationController.text,
+                                    context,
+                                    otherBloodGroupType);
                               }
+                              setState(() {
+                                otherLocationController.clear();
+                                otherNameController.clear();
+                                otherBloodGroupType = '';
+                              });
                             },
                             selected: true,
                           ),
@@ -210,10 +224,68 @@ class _BloodRequestViewBodyState extends State<BloodRequestViewBody> {
   }
 }
 
-
 /// other API (post)
 /// {
 /// bloog group,
 /// name,
 /// date of birth
 /// } at the same user(self) info
+
+sendOtherBloodRequest(String Fname, String location, BuildContext context,
+    String bloodType) async {
+  var token = CacheHelper.getData(key: 'token');
+  var headers = {
+    'Authorization': 'Token $token',
+    'Content-Type': 'application/json'
+  };
+  var request = http.Request(
+      'POST', Uri.parse('http://127.0.0.1:8000/blood/request-other/'));
+  request.body = json
+      .encode({'Fname': Fname, 'location': location, "blood_group": bloodType});
+  print(request.body);
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 201) {
+    print(await response.stream.bytesToString());
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.green,
+          title: Text('Accepted'),
+          content: Text('Your request has been created !'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  } else {
+    print(response.reasonPhrase);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.red,
+          title: Text('Declined'),
+          content: Text('Your request has been refuesd !'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}

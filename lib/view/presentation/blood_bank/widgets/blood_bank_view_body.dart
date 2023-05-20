@@ -1,14 +1,20 @@
 // ignore: must_be_immutable
 // ignore_for_file: unrelated_type_equality_checks
 
+import 'dart:convert';
+
 import 'package:blood_bank/view/presentation/examine_blood/examine_blood_view.dart';
 import 'package:blood_bank/view/shared/component/components.dart';
 import 'package:blood_bank/view/shared/component/helperfunctions.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../model/bloodImages.dart';
+import '../../../../model/userBloodRequests.dart';
 import '../../../shared/component/constants.dart';
 import '../../../shared/component/device_size.dart';
+import '../../../shared/network/local/cach_helper.dart';
 import '../../home_screen/home_body.dart';
+import 'package:http/http.dart' as http;
 
 class BloodBankViewBody extends StatefulWidget {
   const BloodBankViewBody({
@@ -55,6 +61,20 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
   bool requestButton = true;
   bool donateButtonState = false;
   bool bankButtonState = false;
+//  requestBloodBank = {"id":9,"user":"0123456789","Fname":"Ahmed Alawy","location":"Zagazig","approved":false,"blood_group":null,"date":"2023-05-11","time":"08:19:13.641287"};
+  List<BloodRequest> requestsList = [];
+  List<DonateModel> donatesList = [];
+  @override
+  void initState() {
+    getAllBloodRequest().then((value) {
+      setState(() {
+        requestsList = value;
+      });
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
@@ -108,6 +128,11 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
                 });
               },
               ontapTwo: () {
+                getAllDonatedRequest().then((value) {
+                  setState(() {
+                    donatesList = value;
+                  });
+                });
                 setState(() {
                   requestButton = false;
                   donateButtonState = true;
@@ -133,18 +158,22 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
                         padding: EdgeInsets.only(
                             bottom: 0.08 * LayoutSize.layoutValue!),
                         child: BloodBankCards(
-                          dateText: widget.dateTextR,
-                          personName: widget.personNameR,
-                          time: widget.timeR,
-                          personLocation: widget.personLocationR,
-                          personImage: widget.personImageR,
+                          dateText: requestsList[index].date,
+                          personName: requestsList[index].fname,
+                          time: requestsList[index].time,
+                          personLocation: requestsList[index].location,
+                          personImage:
+                              BloodImages(requestsList[index].bloodGroup)
+                                  .getBloodImages(),
                           buttonCaption:
-                              widget.requestAccept! ? "Accept" : "Done",
+                              requestsList[index].approved ? "Done" : "Accept",
                           onTapButton: () {
-                            setState(() {
-                              if (widget.requestAccept! == true) {
-                              } else {}
+                            getAllBloodRequest().then((value) {
+                              setState(() {
+                                requestsList = value;
+                              });
                             });
+                            approvedRequests(requestsList[index].id);
                           },
                         ));
                   },
@@ -153,7 +182,7 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
             if (donateButtonState)
               Expanded(
                 child: ListView.builder(
-                  itemCount: 7,
+                  itemCount: donatesList.length,
                   padding: EdgeInsets.symmetric(
                       vertical: 0.15 * LayoutSize.layoutValue!),
                   itemBuilder: (BuildContext context, int index) {
@@ -161,11 +190,13 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
                         padding: EdgeInsets.only(
                             bottom: 0.08 * LayoutSize.layoutValue!),
                         child: BloodBankCards(
-                          dateText: widget.dateTextD,
-                          personName: widget.personNameD,
-                          time: widget.timeD,
-                          personLocation: widget.personLocationD,
-                          personImage: widget.personImageD,
+                          dateText: donatesList[index].date,
+                          personName: donatesList[index].firstName,
+                          time: donatesList[index].time,
+                          personLocation: donatesList[index].location,
+                          personImage:
+                              BloodImages(donatesList[index].bloodGroup)
+                                  .getBloodImages(),
                           buttonCaption: 'examine',
                           onTapButton: () {
                             nextScreen(context, const ExamineBloodView());
@@ -177,7 +208,7 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
             if (bankButtonState)
               Expanded(
                 child: ListView.builder(
-                  itemCount: 7,
+                  itemCount: requestsList.length,
                   padding: EdgeInsets.symmetric(
                       vertical: 0.15 * LayoutSize.layoutValue!),
                   itemBuilder: (BuildContext context, int index) {
@@ -280,6 +311,7 @@ class _ThreeButtonsState extends State<ThreeButtons> {
     );
   }
 }
+
 ///// requests API(get all)
 ///{
 ///date, time, name, location, blood group, status(accepted or pendding)
@@ -294,3 +326,71 @@ class _ThreeButtonsState extends State<ThreeButtons> {
 ///{
 ///date, time, name, location, blood group
 ///} i can remove any item
+///
+///
+
+Future<List<BloodRequest>> getAllBloodRequest() async {
+  var token = CacheHelper.getData(key: 'token');
+  var headers = {'Authorization': 'Token $token'};
+  var request = http.Request(
+      'GET', Uri.parse('http://127.0.0.1:8000/blood/all/blood-requests/'));
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    var body = await response.stream.bytesToString();
+    List<dynamic> jsonList = jsonDecode(body);
+    List<BloodRequest> bloodRequests =
+        jsonList.map((json) => BloodRequest.fromJson(json)).toList();
+
+    return bloodRequests;
+  } else {
+    print(response.reasonPhrase);
+    return []; // Return an empty list if the response status code is not 200
+  }
+}
+
+void approvedRequests(int id) async {
+  var token = CacheHelper.getData(key: 'token');
+  var headers = {
+    'Authorization': 'Token $token',
+    'Content-Type': 'application/json'
+  };
+  var request = http.MultipartRequest(
+      'POST', Uri.parse('http://127.0.0.1:8000/blood/$id/request-approved/'));
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    print(await response.stream.bytesToString());
+  } else {
+    print(response.reasonPhrase);
+  }
+}
+
+Future<List<DonateModel>> getAllDonatedRequest() async {
+  var token = CacheHelper.getData(key: 'token');
+  var headers = {'Authorization': 'Token $token'};
+  var request = http.Request(
+      'GET', Uri.parse('http://127.0.0.1:8000/blood/all/donate-requests/'));
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    var body = await response.stream.bytesToString();
+    List<dynamic> jsonList = jsonDecode(body);
+    List<DonateModel> donatemodel =
+        jsonList.map((json) => DonateModel.fromJson(json)).toList();
+    print(donatemodel[0].firstName);
+    return donatemodel;
+  } else {
+    print(response.reasonPhrase);
+    return []; // Return an empty list if the response status code is not 200
+  }
+}
