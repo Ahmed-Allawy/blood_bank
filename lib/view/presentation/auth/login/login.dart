@@ -189,7 +189,6 @@ class _LogInState extends State<LogIn> {
 }
 
 Future<bool> login(phone, pass) async {
-  print(phone);
   var headers = {'Content-Type': 'application/json'};
   var request = http.Request('POST', Uri.parse('http://127.0.0.1:8000/login/'));
   //here I send the password and the phone number for login by passing them to the body

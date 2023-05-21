@@ -97,22 +97,3 @@ Future<bool> sendUserBloodRequest() async {
     return false;
   }
 }
-
-// void getUserBloodRequest() async {
-//   var token = CacheHelper.getData(key: 'token');
-//   print(token);
-//   var headers = {'Authorization': 'Token $token'};
-//   var request = http.Request(
-//       'GET', Uri.parse('http://127.0.0.1:8000/blood/user/blood-requests/'));
-
-//   request.headers.addAll(headers);
-
-//   http.StreamedResponse response = await request.send();
-
-//   if (response.statusCode == 200) {
-//     var body = await response.stream.bytesToString();
-//     print(body);
-//   } else {
-//     print(response.reasonPhrase);
-//   }
-// }

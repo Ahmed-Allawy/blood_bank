@@ -4,7 +4,6 @@ import 'package:blood_bank/view/shared/component/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import '../../../shared/network/local/cach_helper.dart';
 import '../../on Boarding/on_boarding_view.dart';
 
 class SplashViewBody extends StatefulWidget {

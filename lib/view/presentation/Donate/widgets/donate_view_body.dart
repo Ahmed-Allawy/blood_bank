@@ -284,12 +284,6 @@ class _DonateViewBodyState extends State<DonateViewBody> {
   }
 }
 
-/// other API (post)
-/// {
-/// bloog group,
-/// name,
-/// date of birth
-/// } at the same user(self) info
 sendUserDonateRequest(String Fname, String location, BuildContext context,
     String bloodType, String campagain) async {
   var token = CacheHelper.getData(key: 'token');

@@ -20,31 +20,3 @@ class _HistoryViewState extends State<HistoryView> {
     );
   }
 }
-
-/// get donate history of this user
-/// ==>> user donated
-/// {
-/// date, time, location, receiver id
-/// }
-/// ***************************************/
-/// ==>> user reveived
-/// {
-/// date, time, location, donor id
-/// donar -> name, location, phone number, email
-/// }
-/// this is the get request
-// var headers = {
-//   'Authorization': 'Token a5fd5ff9e485f4938c0bd3606c1d5060c7e63821'
-// };
-// var request = http.Request('GET', Uri.parse('http://127.0.0.1:8000/blood/user/donate-requests/'));
-
-// request.headers.addAll(headers);
-
-// http.StreamedResponse response = await request.send();
-
-// if (response.statusCode == 200) {
-//   print(await response.stream.bytesToString());
-// }
-// else {
-//   print(response.reasonPhrase);
-// }

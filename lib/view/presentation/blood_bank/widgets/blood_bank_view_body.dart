@@ -402,6 +402,5 @@ void deleteBank(int id) async {
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 200) {
-    print('deleted');
   } else {}
 }

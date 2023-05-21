@@ -111,7 +111,6 @@ Future<List<BloodRequest>> getUserDonateRequest() async {
     List<dynamic> jsonList = jsonDecode(body);
     List<BloodRequest> bloodRequests =
         jsonList.map((json) => BloodRequest.fromJson(json)).toList();
-    print(bloodRequests[0].location);
     return bloodRequests;
   } else {
     return []; // Return an empty list if the response status code is not 200
