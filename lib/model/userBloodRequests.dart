@@ -67,7 +67,7 @@ class DonateModel {
         location: json['location'],
         approved: json['approved'],
         bloodGroup: json['blood_group'],
-        campaign: json['campaign'],
+        campaign: json['campagain'],
         date: json['date'],
         time: json['time'],
       );

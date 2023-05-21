@@ -75,19 +75,15 @@ class _SplashViewBodyState extends State<SplashViewBody>
 }
 
 Future<bool> isConnected() async {
-  var token = CacheHelper.getData(key: 'token');
-
-  var headers = {'Authorization': 'Token $token'};
-  var request =
-      http.Request('GET', Uri.parse('http://127.0.0.1:8000/isadmin/'));
-
-  request.headers.addAll(headers);
+  var request = http.Request('GET', Uri.parse('http://127.0.0.1:8000/'));
 
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 200) {
-    return true; // Convert response to boolean value
+    print(await response.stream.bytesToString());
+    return true;
   } else {
-    return false; // Return false if request failed
+    print(response.reasonPhrase);
+    return false;
   }
 }

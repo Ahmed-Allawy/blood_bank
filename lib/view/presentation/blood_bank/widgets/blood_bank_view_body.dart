@@ -3,7 +3,6 @@
 
 import 'dart:convert';
 
-import 'package:blood_bank/view/presentation/examine_blood/examine_blood_view.dart';
 import 'package:blood_bank/view/shared/component/components.dart';
 import 'package:blood_bank/view/shared/component/helperfunctions.dart';
 import 'package:flutter/material.dart';
@@ -13,14 +12,16 @@ import '../../../../model/userBloodRequests.dart';
 import '../../../shared/component/constants.dart';
 import '../../../shared/component/device_size.dart';
 import '../../../shared/network/local/cach_helper.dart';
-import '../../home_screen/home_body.dart';
 import 'package:http/http.dart' as http;
+
+import '../../examine_blood/widgets/examine_blood_view_body.dart';
 
 class BloodBankViewBody extends StatefulWidget {
   const BloodBankViewBody({
     Key? key,
+    required this.exitButton,
   }) : super(key: key);
-
+  final VoidCallback? exitButton;
   @override
   State<BloodBankViewBody> createState() => _BloodBankViewBodyState();
 }
@@ -29,9 +30,9 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
   bool requestButton = true;
   bool donateButtonState = false;
   bool bankButtonState = false;
-//  requestBloodBank = {"id":9,"user":"0123456789","Fname":"Ahmed Alawy","location":"Zagazig","approved":false,"blood_group":null,"date":"2023-05-11","time":"08:19:13.641287"};
   List<BloodRequest> requestsList = [];
   List<DonateModel> donatesList = [];
+  List<BloodRequest> bloodBankList = [];
   @override
   void initState() {
     getAllBloodRequest().then((value) {
@@ -46,6 +47,7 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
+
     return Scaffold(
         backgroundColor: primaryColor,
         appBar: AppBar(
@@ -62,9 +64,7 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
           ),
           leading: BackButton(
             color: secondaryColor,
-            onPressed: () {
-              nextScreenRep(context, const Home());
-            },
+            onPressed: widget.exitButton!,
           ),
           centerTitle: true,
           title: const Text(
@@ -108,6 +108,11 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
                 });
               },
               ontapThree: () {
+                getBloodBank().then((value) {
+                  setState(() {
+                    bloodBankList = value;
+                  });
+                });
                 setState(() {
                   requestButton = false;
                   donateButtonState = false;
@@ -115,10 +120,11 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
                 });
               },
             ),
+            //get all requests and show it at a card
             if (requestButton)
               Expanded(
                 child: ListView.builder(
-                  itemCount: 7,
+                  itemCount: requestsList.length,
                   padding: EdgeInsets.symmetric(
                       vertical: 0.15 * LayoutSize.layoutValue!),
                   itemBuilder: (BuildContext context, int index) {
@@ -136,12 +142,12 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
                           buttonCaption:
                               requestsList[index].approved ? "Done" : "Accept",
                           onTapButton: () {
+                            approvedRequests(requestsList[index].id);
                             getAllBloodRequest().then((value) {
                               setState(() {
                                 requestsList = value;
                               });
                             });
-                            approvedRequests(requestsList[index].id);
                           },
                         ));
                   },
@@ -167,7 +173,15 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
                                   .getBloodImages(),
                           buttonCaption: 'examine',
                           onTapButton: () {
-                            nextScreen(context, const ExamineBloodView());
+                            nextScreen(
+                                context,
+                                ExamineBlood(
+                                  email: donatesList[index].bloodGroup,
+                                  location: donatesList[index].location,
+                                  personName: donatesList[index].firstName,
+                                  phoneNumber: donatesList[index].campaign,
+                                  id: donatesList[index].id,
+                                ));
                           },
                         ));
                   },
@@ -176,7 +190,7 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
             if (bankButtonState)
               Expanded(
                 child: ListView.builder(
-                  itemCount: requestsList.length,
+                  itemCount: bloodBankList.length,
                   padding: EdgeInsets.symmetric(
                       vertical: 0.15 * LayoutSize.layoutValue!),
                   itemBuilder: (BuildContext context, int index) {
@@ -184,15 +198,22 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
                         padding: EdgeInsets.only(
                             bottom: 0.08 * LayoutSize.layoutValue!),
                         child: BloodBankCards(
-                          dateText: donatesList[index].date,
-                          personName: donatesList[index].firstName,
-                          time: donatesList[index].time,
-                          personLocation: donatesList[index].location,
+                          dateText: bloodBankList[index].date,
+                          personName: bloodBankList[index].fname,
+                          time: bloodBankList[index].time,
+                          personLocation: bloodBankList[index].location,
                           personImage:
-                              BloodImages(donatesList[index].bloodGroup)
+                              BloodImages(bloodBankList[index].bloodGroup)
                                   .getBloodImages(),
                           buttonCaption: 'Donated',
-                          onTapButton: () {},
+                          onTapButton: () {
+                            deleteBank(bloodBankList[index].id);
+                            getBloodBank().then((value) {
+                              setState(() {
+                                bloodBankList = value;
+                              });
+                            });
+                          },
                         ));
                   },
                 ),
@@ -334,10 +355,53 @@ Future<List<DonateModel>> getAllDonatedRequest() async {
   if (response.statusCode == 200) {
     var body = await response.stream.bytesToString();
     List<dynamic> jsonList = jsonDecode(body);
+
     List<DonateModel> donatemodel =
         jsonList.map((json) => DonateModel.fromJson(json)).toList();
+
     return donatemodel;
   } else {
     return []; // Return an empty list if the response status code is not 200
   }
+}
+
+Future<List<BloodRequest>> getBloodBank() async {
+  var token = CacheHelper.getData(key: 'token');
+  var headers = {'Authorization': 'Token $token'};
+  var request = http.Request(
+      'GET', Uri.parse('http://127.0.0.1:8000/blood/all/accepted-requests/'));
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    var body = await response.stream.bytesToString();
+    List<dynamic> jsonList = jsonDecode(body);
+
+    List<BloodRequest> donatemodel =
+        jsonList.map((json) => BloodRequest.fromJson(json)).toList();
+
+    return donatemodel;
+  } else {
+    return []; // Return an empty list if the response status code is not 200
+  }
+}
+
+void deleteBank(int id) async {
+  var token = CacheHelper.getData(key: 'token');
+  var headers = {
+    'Authorization': 'Token $token',
+    'Content-Type': 'application/json'
+  };
+  var request = http.MultipartRequest(
+      'POST', Uri.parse('http://127.0.0.1:8000/blood/$id/donate-delete/'));
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    print('deleted');
+  } else {}
 }

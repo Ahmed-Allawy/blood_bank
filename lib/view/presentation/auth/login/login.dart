@@ -6,6 +6,7 @@ import 'package:blood_bank/view/shared/component/constants.dart';
 import 'package:blood_bank/view/shared/component/device_size.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import '../../../shared/component/helperfunctions.dart';
 
@@ -13,6 +14,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../../shared/network/local/cach_helper.dart';
+import '../../blood_bank/blood_bank_view.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({super.key});
@@ -27,7 +29,8 @@ class _LogInState extends State<LogIn> {
   var formKey = GlobalKey<FormState>();
   bool reqstatus = false;
   late final GetUserInfo userdata;
-  @override
+  bool isUserAdmin = false;
+
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
@@ -127,7 +130,17 @@ class _LogInState extends State<LogIn> {
                                     value: userdata.bloodGroup);
                               });
                             });
-                            nextScreen(context, const Home());
+                            isAdmin().then((value) {
+                              value
+                                  ? Get.to(() => const BloodBankView(),
+                                      transition: Transition.rightToLeft,
+                                      duration:
+                                          const Duration(milliseconds: 500))
+                                  : Get.to(() => const Home(),
+                                      transition: Transition.rightToLeft,
+                                      duration:
+                                          const Duration(milliseconds: 500));
+                            });
                           } else {
                             setState(() {
                               reqstatus = true;
@@ -222,5 +235,24 @@ Future<GetUserInfo> getUserInfo() async {
     return userData;
   } else {
     throw Exception('Failed to load user data');
+  }
+}
+
+Future<bool> isAdmin() async {
+  var token = CacheHelper.getData(key: 'token');
+  var headers = {'Authorization': 'Token $token'};
+  var request =
+      http.Request('GET', Uri.parse('http://127.0.0.1:8000/isadmin/'));
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    var body = await response.stream.bytesToString();
+
+    return body == '[true]'; // Convert response to boolean value
+  } else {
+    return false; // Return false if request failed
   }
 }

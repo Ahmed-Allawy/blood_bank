@@ -15,8 +15,17 @@ import 'package:http/http.dart' as http;
 class ExamineBlood extends StatefulWidget {
   const ExamineBlood({
     super.key,
+    required this.location,
+    required this.phoneNumber,
+    required this.email,
+    required this.personName,
+    required this.id,
   });
-
+  final String? location;
+  final String? phoneNumber;
+  final String? email;
+  final String? personName;
+  final int? id;
   @override
   State<ExamineBlood> createState() => _ExamineBloodState();
 }
@@ -27,6 +36,7 @@ class _ExamineBloodState extends State<ExamineBlood> {
   final pressureController = TextEditingController();
   final pulseController = TextEditingController();
   var formKey = GlobalKey<FormState>();
+
   List bloodGroup = ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-'];
   @override
   Widget build(BuildContext context) {
@@ -67,14 +77,14 @@ class _ExamineBloodState extends State<ExamineBlood> {
               SizedBox(
                 height: 0.08 * LayoutSize.layoutValue!,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
-                child: GeneralUserInfo(
-                    location: CacheHelper.getData(key: 'userLocation'),
-                    phoneNumber: CacheHelper.getData(key: 'userPhoneNumber'),
-                    email: CacheHelper.getData(key: 'userEmail'),
-                    personName: CacheHelper.getData(key: 'userName')),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 50),
+              //   child: GeneralUserInfo(
+              //       location: widget.location,
+              //       phoneNumber: widget.phoneNumber,
+              //       email: widget.email,
+              //       personName: widget.personName),
+              // ),
               Form(
                 //this is the key
                 key: formKey,
@@ -169,7 +179,8 @@ class _ExamineBloodState extends State<ExamineBlood> {
                           text: "Done",
                           onTap: () {
                             if (formKey.currentState!.validate()) {
-                              formKey.currentState!.save();
+                              sendExaminedRequests(
+                                  context, bloodGroupType, widget.id!);
                             }
                           },
                           selected: true,
@@ -185,22 +196,20 @@ class _ExamineBloodState extends State<ExamineBlood> {
   }
 }
 
-sendExaminedRequests(BuildContext context, String bloodType) async {
+sendExaminedRequests(BuildContext context, String bloodType, int id) async {
   var token = CacheHelper.getData(key: 'token');
   var headers = {
     'Authorization': 'Token $token',
     'Content-Type': 'application/json'
   };
-  var request = http.Request(
-      'POST', Uri.parse('http://127.0.0.1:8000/blood/donate-other/'));
-  request.body = json.encode({
-    "blood_group": bloodType,
-  });
+  var request = http.MultipartRequest(
+      'PUT', Uri.parse('http://127.0.0.1:8000/blood/$id/donate-approved/'));
   request.headers.addAll(headers);
+  request.fields.addAll({'blood_group': bloodType});
 
   http.StreamedResponse response = await request.send();
 
-  if (response.statusCode == 201) {
+  if (response.statusCode == 200) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

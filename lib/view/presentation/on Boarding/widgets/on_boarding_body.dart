@@ -26,9 +26,6 @@ class _OnBoardingViewBodyState extends State<OnBoardingViewBody> {
   bool isUserAdmin = false;
   @override
   void initState() {
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   setState(() {});
-    // });
     pageController = PageController(initialPage: 0)
       ..addListener(() {
         setState(() {});
@@ -145,6 +142,7 @@ class _OnBoardingViewBodyState extends State<OnBoardingViewBody> {
 
 Future<bool> isAdmin() async {
   var token = CacheHelper.getData(key: 'token');
+  print(token);
   var headers = {'Authorization': 'Token $token'};
   var request =
       http.Request('GET', Uri.parse('http://127.0.0.1:8000/isadmin/'));
@@ -155,7 +153,8 @@ Future<bool> isAdmin() async {
 
   if (response.statusCode == 200) {
     var body = await response.stream.bytesToString();
-    return body == 'true'; // Convert response to boolean value
+
+    return body == '[true]'; // Convert response to boolean value
   } else {
     return false; // Return false if request failed
   }
