@@ -51,7 +51,7 @@ class _NaveBarState extends State<NaveBar> {
           ),
           const Linesapce(),
           UserOptions(
-            text: 'history\t\t\t\t',
+            text: 'donates\t\t',
             onTap: () {
               nextScreen(context, const HistoryView());
             },
@@ -78,7 +78,13 @@ class _NaveBarState extends State<NaveBar> {
               onTap: () {
                 logout();
                 CacheHelper.removeData(key: 'token');
-                nextScreen(context, LogIn());
+                CacheHelper.removeData(key: 'userEmail');
+                CacheHelper.removeData(key: 'userPhoneNumber');
+                CacheHelper.removeData(key: 'userName');
+                CacheHelper.removeData(key: 'userDate');
+                CacheHelper.removeData(key: 'userLocation');
+                CacheHelper.removeData(key: 'userBloodType');
+                nextScreen(context, const LogIn());
               },
             ),
           ),
@@ -99,8 +105,5 @@ logout() async {
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 200) {
-    print(await response.stream.bytesToString());
-  } else {
-    print(response.reasonPhrase);
-  }
+  } else {}
 }

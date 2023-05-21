@@ -117,7 +117,6 @@ Future<List<BloodRequest>> getUserBloodRequest() async {
 
     return bloodRequests;
   } else {
-    print(response.reasonPhrase);
     return []; // Return an empty list if the response status code is not 200
   }
 }
@@ -136,8 +135,5 @@ void deleteRequests(int id) async {
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 200) {
-    print(await response.stream.bytesToString());
-  } else {
-    print(response.reasonPhrase);
-  }
+  } else {}
 }

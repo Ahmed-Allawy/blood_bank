@@ -3,7 +3,8 @@
 import 'package:blood_bank/view/shared/component/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:http/http.dart' as http;
+import '../../../shared/network/local/cach_helper.dart';
 import '../../on Boarding/on_boarding_view.dart';
 
 class SplashViewBody extends StatefulWidget {
@@ -27,7 +28,10 @@ class _SplashViewBodyState extends State<SplashViewBody>
         Tween<double>(begin: .2, end: 1).animate(animationController!);
 
     animationController?.repeat(reverse: true);
-    goToNextScreen();
+    isConnected().then((value) {
+      if (value) goToNextScreen();
+    });
+    //
   }
 
   @override
@@ -67,5 +71,23 @@ class _SplashViewBodyState extends State<SplashViewBody>
     Future.delayed(const Duration(seconds: 3), () {
       Get.to(() => const OnBoardingView(), transition: Transition.fade);
     });
+  }
+}
+
+Future<bool> isConnected() async {
+  var token = CacheHelper.getData(key: 'token');
+
+  var headers = {'Authorization': 'Token $token'};
+  var request =
+      http.Request('GET', Uri.parse('http://127.0.0.1:8000/isadmin/'));
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    return true; // Convert response to boolean value
+  } else {
+    return false; // Return false if request failed
   }
 }

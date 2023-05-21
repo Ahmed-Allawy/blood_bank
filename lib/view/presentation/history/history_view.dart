@@ -13,18 +13,10 @@ class _HistoryViewState extends State<HistoryView> {
   @override
   Widget build(BuildContext context) {
     return const HistoryViewBody(
-      dateTextD: '24/12/2023',
-      donarID: '45',
-      timeD: '3 : 00 Am',
-      personLocationD: '123,xyz,apt',
       dateTextR: '24/12/2023',
       receiverID: '13',
       timeR: '3 : 00 Am',
       personLocationR: '123,xyz,apt',
-      donarEmail: 'ahmed@gmail.com',
-      donarName: "Ahmed Allawy Zena",
-      donarPhoneNumber: '0102332433',
-      bloodType: 'assets/B.png',
     );
   }
 }

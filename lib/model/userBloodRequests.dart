@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 class BloodRequest {
   final int id;
   final String user;

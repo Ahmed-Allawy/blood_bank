@@ -1,6 +1,5 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, non_constant_identifier_names, use_build_context_synchronously
 
-import 'package:blood_bank/view/presentation/Blood_Request/Blood_request_view.dart';
 import 'package:flutter/material.dart';
 
 import '../../../shared/component/components.dart';
@@ -127,7 +126,8 @@ class _DonateViewBodyState extends State<DonateViewBody> {
                           ? 'Select campagain'
                           : ' $CampagainName',
                       style: TextStyle(
-                          color: campagain.isEmpty ? popColor : Colors.black),
+                          color:
+                              CampagainName.isEmpty ? popColor : Colors.black),
                     ),
                     items: campagain.map((value) {
                       return DropdownMenuItem(value: value, child: Text(value));
@@ -152,7 +152,7 @@ class _DonateViewBodyState extends State<DonateViewBody> {
                     location: widget.location!,
                     phoneNumber: widget.phoneNumber!,
                     email: widget.email!,
-                    buttonCaption: 'NEXT',
+                    buttonCaption: 'DONATE',
                     ontap: () {
                       sendUserDonateRequest(
                           widget.personName!,
@@ -160,7 +160,9 @@ class _DonateViewBodyState extends State<DonateViewBody> {
                           context,
                           widget.imageBlood!,
                           CampagainName);
-                      CampagainName = '';
+                      setState(() {
+                        CampagainName = '';
+                      });
                     },
                     imageBlood: widget.imageBlood,
                     personName: widget.personName,
@@ -248,7 +250,7 @@ class _DonateViewBodyState extends State<DonateViewBody> {
                           width: 210,
                           height: 50,
                           child: GeneralcustomButton(
-                            text: "Next",
+                            text: "DONATE",
                             onTap: () {
                               if (formKey.currentState!.validate()) {
                                 formKey.currentState!.save();
@@ -258,10 +260,12 @@ class _DonateViewBodyState extends State<DonateViewBody> {
                                     context,
                                     otherBloodGroupType,
                                     CampagainName);
-                                otherBloodGroupType = '';
+                                setState(() {
+                                  CampagainName = '';
+                                  otherBloodGroupType = '';
+                                });
                                 otherDateController.clear();
                                 otherLocationController.clear();
-                                CampagainName = '';
                                 otherNameController.clear();
                               }
                             },
@@ -301,7 +305,6 @@ sendUserDonateRequest(String Fname, String location, BuildContext context,
     "blood_group": bloodType,
     'campagain': campagain
   });
-  print(request.body);
   request.headers.addAll(headers);
 
   http.StreamedResponse response = await request.send();
@@ -313,11 +316,11 @@ sendUserDonateRequest(String Fname, String location, BuildContext context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.green,
-          title: Text('Accepted'),
-          content: Text('Your request has been created !'),
+          title: const Text('Accepted'),
+          content: const Text('Your request has been created !'),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -327,17 +330,16 @@ sendUserDonateRequest(String Fname, String location, BuildContext context,
       },
     );
   } else {
-    print(response.reasonPhrase);
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.red,
-          title: Text('Declined'),
-          content: Text('Your request has been refuesd !'),
+          title: const Text('Declined'),
+          content: const Text('Your request has been refuesd !'),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -364,7 +366,6 @@ sendOtherDonateRequest(String Fname, String location, BuildContext context,
     "blood_group": bloodType,
     'campagain': campagain
   });
-  print(request.body);
   request.headers.addAll(headers);
 
   http.StreamedResponse response = await request.send();
@@ -375,11 +376,11 @@ sendOtherDonateRequest(String Fname, String location, BuildContext context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.green,
-          title: Text('Accepted'),
-          content: Text('Your request has been created !'),
+          title: const Text('Accepted'),
+          content: const Text('Your request has been created !'),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -389,17 +390,16 @@ sendOtherDonateRequest(String Fname, String location, BuildContext context,
       },
     );
   } else {
-    print(response.reasonPhrase);
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.red,
-          title: Text('Declined'),
-          content: Text('Your request has been refuesd !'),
+          title: const Text('Declined'),
+          content: const Text('Your request has been refuesd !'),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
               },

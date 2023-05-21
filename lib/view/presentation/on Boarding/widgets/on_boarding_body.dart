@@ -74,7 +74,6 @@ class _OnBoardingViewBodyState extends State<OnBoardingViewBody> {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    print(CacheHelper.getData(key: 'token'));
                     if (CacheHelper.getData(key: 'token') == null) {
                       Get.to(() => const LogIn(),
                           transition: Transition.rightToLeft,
@@ -146,7 +145,6 @@ class _OnBoardingViewBodyState extends State<OnBoardingViewBody> {
 
 Future<bool> isAdmin() async {
   var token = CacheHelper.getData(key: 'token');
-  print(token);
   var headers = {'Authorization': 'Token $token'};
   var request =
       http.Request('GET', Uri.parse('http://127.0.0.1:8000/isadmin/'));
@@ -157,10 +155,8 @@ Future<bool> isAdmin() async {
 
   if (response.statusCode == 200) {
     var body = await response.stream.bytesToString();
-    print(body);
     return body == 'true'; // Convert response to boolean value
   } else {
-    print(response.reasonPhrase);
     return false; // Return false if request failed
   }
 }

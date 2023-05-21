@@ -1,23 +1,22 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
+
 import 'package:blood_bank/view/shared/component/components.dart';
+import 'package:blood_bank/view/shared/network/local/cach_helper.dart';
 import 'package:flutter/material.dart';
 
 import '../../../shared/component/constants.dart';
 import '../../../shared/component/device_size.dart';
 import '../../../shared/component/helperfunctions.dart';
 import '../../blood_bank/blood_bank_view.dart';
+import 'package:http/http.dart' as http;
 
 class ExamineBlood extends StatefulWidget {
   const ExamineBlood({
     super.key,
-    required this.email,
-    required this.location,
-    required this.personName,
-    required this.phoneNumber,
   });
-  final String? location;
-  final String? phoneNumber;
-  final String? email;
-  final String? personName;
+
   @override
   State<ExamineBlood> createState() => _ExamineBloodState();
 }
@@ -28,7 +27,7 @@ class _ExamineBloodState extends State<ExamineBlood> {
   final pressureController = TextEditingController();
   final pulseController = TextEditingController();
   var formKey = GlobalKey<FormState>();
-  List bloodGroup = ['AB+', 'AB-', 'A', 'AA', 'B', 'BB', 'O', 'OO'];
+  List bloodGroup = ['AB+', 'AB-', 'A+', 'A-', 'B+', 'B-', 'O+', 'O-'];
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
@@ -71,10 +70,10 @@ class _ExamineBloodState extends State<ExamineBlood> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: GeneralUserInfo(
-                    location: widget.location,
-                    phoneNumber: widget.phoneNumber,
-                    email: widget.email,
-                    personName: widget.personName),
+                    location: CacheHelper.getData(key: 'userLocation'),
+                    phoneNumber: CacheHelper.getData(key: 'userPhoneNumber'),
+                    email: CacheHelper.getData(key: 'userEmail'),
+                    personName: CacheHelper.getData(key: 'userName')),
               ),
               Form(
                 //this is the key
@@ -183,5 +182,61 @@ class _ExamineBloodState extends State<ExamineBlood> {
             ],
           ),
         ));
+  }
+}
+
+sendExaminedRequests(BuildContext context, String bloodType) async {
+  var token = CacheHelper.getData(key: 'token');
+  var headers = {
+    'Authorization': 'Token $token',
+    'Content-Type': 'application/json'
+  };
+  var request = http.Request(
+      'POST', Uri.parse('http://127.0.0.1:8000/blood/donate-other/'));
+  request.body = json.encode({
+    "blood_group": bloodType,
+  });
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 201) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.green,
+          title: const Text('Accepted'),
+          content: const Text('Your request has been created !'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  } else {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.red,
+          title: const Text('Declined'),
+          content: const Text('Your request has been refuesd !'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, non_constant_identifier_names, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 
@@ -242,23 +242,21 @@ sendOtherBloodRequest(String Fname, String location, BuildContext context,
       'POST', Uri.parse('http://127.0.0.1:8000/blood/request-other/'));
   request.body = json
       .encode({'Fname': Fname, 'location': location, "blood_group": bloodType});
-  print(request.body);
   request.headers.addAll(headers);
 
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 201) {
-    print(await response.stream.bytesToString());
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.green,
-          title: Text('Accepted'),
-          content: Text('Your request has been created !'),
+          title: const Text('Accepted'),
+          content: const Text('Your request has been created !'),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -268,17 +266,16 @@ sendOtherBloodRequest(String Fname, String location, BuildContext context,
       },
     );
   } else {
-    print(response.reasonPhrase);
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.red,
-          title: Text('Declined'),
-          content: Text('Your request has been refuesd !'),
+          title: const Text('Declined'),
+          content: const Text('Your request has been refuesd !'),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
               },

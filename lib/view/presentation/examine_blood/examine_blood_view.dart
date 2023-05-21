@@ -12,11 +12,6 @@ class ExamineBloodView extends StatefulWidget {
 class _ExamineBloodViewState extends State<ExamineBloodView> {
   @override
   Widget build(BuildContext context) {
-    return const ExamineBlood(
-      email: 'ahmed@gmail.com',
-      location: 'phaqos-elshaqia',
-      personName: 'Ahmed Zena',
-      phoneNumber: "01023546",
-    );
+    return const ExamineBlood();
   }
 }

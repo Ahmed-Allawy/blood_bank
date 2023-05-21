@@ -12,24 +12,7 @@ class BloodBankView extends StatefulWidget {
 class _BloodBankViewState extends State<BloodBankView> {
   @override
   Widget build(BuildContext context) {
-    return const BloodBankViewBody(
-      requestAccept: true,
-      dateTextR: '24/12/2023',
-      personNameR: 'Ahmed Allawy',
-      timeR: '3 : 00 Am',
-      personLocationR: '123,xyz,apt',
-      personImageR: 'assets/O.png',
-      dateTextD: '24/12/2023',
-      personNameD: 'Ahmed Allawy',
-      timeD: '3 : 00 Am',
-      personLocationD: '123,xyz,apt',
-      personImageD: 'assets/BB.png',
-      dateTextB: '24/12/2023',
-      personNameB: 'Ahmed Allawy',
-      timeB: '3 : 00 Am',
-      personLocationB: '123,xyz,apt',
-      personImageB: 'assets/O.png',
-    );
+    return const BloodBankViewBody();
   }
 }
 

@@ -1,8 +1,12 @@
 // ignore: must_be_immutable
-import 'package:blood_bank/view/presentation/history/widgets/history_cards.dart';
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-import '../../../shared/component/components.dart';
+import 'package:blood_bank/model/bloodImages.dart';
+import 'package:blood_bank/view/presentation/history/widgets/history_cards.dart';
+import 'package:blood_bank/view/shared/network/local/cach_helper.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import '../../../../model/userBloodRequests.dart';
 import '../../../shared/component/constants.dart';
 import '../../../shared/component/device_size.dart';
 import '../../../shared/component/helperfunctions.dart';
@@ -11,30 +15,14 @@ import '../../home_screen/home_body.dart';
 class HistoryViewBody extends StatefulWidget {
   const HistoryViewBody({
     Key? key,
-    required this.dateTextD,
-    required this.timeD,
-    required this.personLocationD,
     required this.dateTextR,
     required this.timeR,
     required this.personLocationR,
-    required this.donarID,
     required this.receiverID,
-    required this.donarName,
-    required this.donarPhoneNumber,
-    required this.donarEmail,
-    required this.bloodType,
   }) : super(key: key);
 
   /// doner info
-  final String? dateTextD;
-  final String? donarID;
-  final String? timeD;
-  final String? personLocationD;
-  //more info about donar
-  final String? donarName;
-  final String? donarPhoneNumber;
-  final String? donarEmail;
-  final String? bloodType;
+
   //// receiver info
   final String? dateTextR;
   final String? receiverID;
@@ -45,8 +33,17 @@ class HistoryViewBody extends StatefulWidget {
 }
 
 class _HistoryViewBodyState extends State<HistoryViewBody> {
-  bool _pageNumber = true;
-  bool view = false;
+  List<BloodRequest> requestsList = [];
+  @override
+  void initState() {
+    getUserDonateRequest().then((value) {
+      setState(() {
+        requestsList = value;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
@@ -72,7 +69,7 @@ class _HistoryViewBodyState extends State<HistoryViewBody> {
         ),
         centerTitle: true,
         title: const Text(
-          'History',
+          'Donate History',
           style: TextStyle(
             fontSize: 36,
             color: secondaryColor,
@@ -80,95 +77,43 @@ class _HistoryViewBodyState extends State<HistoryViewBody> {
           ),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          SizedBox(
-            height: 0.08 * LayoutSize.layoutValue!,
-          ),
-          GeneralOptionButtons(
-            selected: _pageNumber,
-            rightButtonOntap: () {
-              setState(() {
-                _pageNumber = false;
-                //print('pageNumber is false');
-              });
-            },
-            leftButtonCaption: 'Donated',
-            rightButtonCation: "Received",
-            leftButtonOntap: () {
-              setState(() {
-                _pageNumber = true;
-                //print('pageNumber is true');
-              });
-            },
-          ),
-          if (_pageNumber)
-            Expanded(
-              child: ListView.builder(
-                itemCount: 7,
-                padding: EdgeInsets.symmetric(
-                    vertical: 0.15 * LayoutSize.layoutValue!),
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                      padding: EdgeInsets.only(
-                          bottom: 0.08 * LayoutSize.layoutValue!),
-                      child: HistoryDonatesCards(
-                          dateText: widget.dateTextR,
-                          personName: widget.receiverID,
-                          time: widget.timeR,
-                          personLocation: widget.personLocationR));
-                },
-              ),
-            )
-          else
-            Expanded(
-              child: Stack(children: <Widget>[
-                ListView.builder(
-                  itemCount: 7,
-                  padding: EdgeInsets.symmetric(
-                      vertical: 0.15 * LayoutSize.layoutValue!),
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                        padding: EdgeInsets.only(
-                            bottom: 0.08 * LayoutSize.layoutValue!),
-                        child: HistoryReceivedCards(
-                          dateText: widget.dateTextD,
-                          personName: widget.donarID,
-                          time: widget.timeD,
-                          personLocation: widget.personLocationD,
-                          onTap: () {
-                            setState(() {
-                              view = true;
-                            });
-                          },
-                        ));
-                  },
-                ),
-                if (view)
-                  Center(
-                      child: SingleChildScrollView(
-                          child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 0.1 * LayoutSize.layoutValue!,
-                                vertical: 0.2 * LayoutSize.layoutValue!,
-                              ),
-                              child: GeneralUserInfo(
-                                  buttonCaption: 'Back',
-                                  email: widget.donarEmail,
-                                  location: widget.personLocationD,
-                                  ontap: () {
-                                    setState(() {
-                                      view = false;
-                                    });
-                                  },
-                                  phoneNumber: widget.donarPhoneNumber,
-                                  imageBlood: widget.bloodType,
-                                  personName: widget.donarName))))
-              ]),
-            )
-        ],
+      body: ListView.builder(
+        itemCount: requestsList.length,
+        padding: EdgeInsets.symmetric(vertical: 0.15 * LayoutSize.layoutValue!),
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+              padding: EdgeInsets.only(bottom: 0.08 * LayoutSize.layoutValue!),
+              child: HistoryDonatesCards(
+                  dateText: requestsList[index].date,
+                  personName: requestsList[index].fname,
+                  time: requestsList[index].time,
+                  personLocation: requestsList[index].location,
+                  personImage: BloodImages(requestsList[index].bloodGroup)
+                      .getBloodImages()));
+        },
       ),
     );
+  }
+}
+
+Future<List<BloodRequest>> getUserDonateRequest() async {
+  var token = CacheHelper.getData(key: 'token');
+  var headers = {'Authorization': 'Token $token'};
+  var request = http.Request(
+      'GET', Uri.parse('http://127.0.0.1:8000/blood/user/donate-requests/'));
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    var body = await response.stream.bytesToString();
+    List<dynamic> jsonList = jsonDecode(body);
+    List<BloodRequest> bloodRequests =
+        jsonList.map((json) => BloodRequest.fromJson(json)).toList();
+    print(bloodRequests[0].location);
+    return bloodRequests;
+  } else {
+    return []; // Return an empty list if the response status code is not 200
   }
 }

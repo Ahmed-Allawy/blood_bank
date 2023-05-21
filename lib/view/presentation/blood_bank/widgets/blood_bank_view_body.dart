@@ -19,40 +19,8 @@ import 'package:http/http.dart' as http;
 class BloodBankViewBody extends StatefulWidget {
   const BloodBankViewBody({
     Key? key,
-    required this.requestAccept,
-    required this.dateTextR,
-    required this.personNameR,
-    required this.timeR,
-    required this.personLocationR,
-    required this.personImageR,
-    required this.dateTextD,
-    required this.personNameD,
-    required this.timeD,
-    required this.personLocationD,
-    required this.personImageD,
-    required this.dateTextB,
-    required this.personNameB,
-    required this.timeB,
-    required this.personLocationB,
-    required this.personImageB,
   }) : super(key: key);
 
-  final bool? requestAccept;
-  final String? dateTextR;
-  final String? personNameR;
-  final String? timeR;
-  final String? personLocationR;
-  final String? personImageR;
-  final String? dateTextD;
-  final String? personNameD;
-  final String? timeD;
-  final String? personLocationD;
-  final String? personImageD;
-  final String? dateTextB;
-  final String? personNameB;
-  final String? timeB;
-  final String? personLocationB;
-  final String? personImageB;
   @override
   State<BloodBankViewBody> createState() => _BloodBankViewBodyState();
 }
@@ -216,11 +184,13 @@ class _BloodBankViewBodyState extends State<BloodBankViewBody> {
                         padding: EdgeInsets.only(
                             bottom: 0.08 * LayoutSize.layoutValue!),
                         child: BloodBankCards(
-                          dateText: widget.dateTextB,
-                          personName: widget.personNameB,
-                          time: widget.timeD,
-                          personLocation: widget.personLocationB,
-                          personImage: widget.personImageB,
+                          dateText: donatesList[index].date,
+                          personName: donatesList[index].firstName,
+                          time: donatesList[index].time,
+                          personLocation: donatesList[index].location,
+                          personImage:
+                              BloodImages(donatesList[index].bloodGroup)
+                                  .getBloodImages(),
                           buttonCaption: 'Donated',
                           onTapButton: () {},
                         ));
@@ -312,23 +282,6 @@ class _ThreeButtonsState extends State<ThreeButtons> {
   }
 }
 
-///// requests API(get all)
-///{
-///date, time, name, location, blood group, status(accepted or pendding)
-///} i can change status
-///****************************************/
-///Donates API(get all)
-///{
-///date, time, name, location, blood group
-///}
-//////****************************************/
-///Bank API(get all)
-///{
-///date, time, name, location, blood group
-///} i can remove any item
-///
-///
-
 Future<List<BloodRequest>> getAllBloodRequest() async {
   var token = CacheHelper.getData(key: 'token');
   var headers = {'Authorization': 'Token $token'};
@@ -347,7 +300,6 @@ Future<List<BloodRequest>> getAllBloodRequest() async {
 
     return bloodRequests;
   } else {
-    print(response.reasonPhrase);
     return []; // Return an empty list if the response status code is not 200
   }
 }
@@ -366,10 +318,7 @@ void approvedRequests(int id) async {
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 200) {
-    print(await response.stream.bytesToString());
-  } else {
-    print(response.reasonPhrase);
-  }
+  } else {}
 }
 
 Future<List<DonateModel>> getAllDonatedRequest() async {
@@ -387,10 +336,8 @@ Future<List<DonateModel>> getAllDonatedRequest() async {
     List<dynamic> jsonList = jsonDecode(body);
     List<DonateModel> donatemodel =
         jsonList.map((json) => DonateModel.fromJson(json)).toList();
-    print(donatemodel[0].firstName);
     return donatemodel;
   } else {
-    print(response.reasonPhrase);
     return []; // Return an empty list if the response status code is not 200
   }
 }

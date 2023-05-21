@@ -1,7 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, unused_field, use_build_context_synchronously
 
 import 'package:blood_bank/view/shared/network/local/cach_helper.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:blood_bank/model/model.dart';
@@ -192,19 +191,6 @@ class _RegisterState extends State<Register> {
                     text: "Confirm",
                     onTap: () {
                       if (formKey.currentState!.validate()) {
-                        CacheHelper.saveData(
-                            key: 'userEmail', value: emailController.text);
-                        CacheHelper.saveData(
-                            key: 'userPhoneNumber', value: phoneNumber);
-                        CacheHelper.saveData(
-                            key: 'userName', value: nameController.text);
-                        CacheHelper.saveData(
-                            key: 'userDate', value: dateController.text);
-                        CacheHelper.saveData(
-                            key: 'userLocation',
-                            value: locationController.text);
-                        CacheHelper.saveData(
-                            key: 'userBloodType', value: bloodGroupType);
                         signup(user, context);
                       }
                     },
@@ -242,15 +228,11 @@ signup(User user, BuildContext context) async {
   var request =
       http.Request('POST', Uri.parse('http://127.0.0.1:8000/singup/'));
   request.body = user.toJson();
-  print(user.toJson());
   request.headers.addAll(headers);
 
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 201) {
-    print(await response.stream.bytesToString());
-    nextScreen(context, const Home());
-  } else {
-    print(response.reasonPhrase);
-  }
+    nextScreen(context, const LogIn());
+  } else {}
 }

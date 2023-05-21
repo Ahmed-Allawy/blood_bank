@@ -23,6 +23,10 @@ class _BloodrequestViewState extends State<BloodRequestView> {
     return BloodRequestViewBody(
       email: CacheHelper.getData(key: 'userEmail'),
       location: CacheHelper.getData(key: 'userLocation'),
+      phoneNumber: (CacheHelper.getData(key: 'userPhoneNumber')).toString(),
+      imageBlood: BloodImages(CacheHelper.getData(key: 'userBloodType'))
+          .getBloodImages(),
+      personName: CacheHelper.getData(key: 'userName'),
       doneOntap: () {
         setState(() {
           sendUserBloodRequest().then((value) {
@@ -32,11 +36,11 @@ class _BloodrequestViewState extends State<BloodRequestView> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     backgroundColor: Colors.green,
-                    title: Text('Accepted'),
-                    content: Text('Your request has been created '),
+                    title: const Text('Accepted'),
+                    content: const Text('Your request has been created '),
                     actions: <Widget>[
                       TextButton(
-                        child: Text('OK'),
+                        child: const Text('OK'),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
@@ -51,11 +55,11 @@ class _BloodrequestViewState extends State<BloodRequestView> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     backgroundColor: Colors.red,
-                    title: Text('Declined'),
-                    content: Text('Your request has been refuesd !'),
+                    title: const Text('Declined'),
+                    content: const Text('Your request has been refuesd !'),
                     actions: <Widget>[
                       TextButton(
-                        child: Text('OK'),
+                        child: const Text('OK'),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
@@ -66,41 +70,11 @@ class _BloodrequestViewState extends State<BloodRequestView> {
               );
             }
           });
-
-          //sendBloodRequest();
         });
       },
-      phoneNumber: (CacheHelper.getData(key: 'userPhoneNumber')).toString(),
-      imageBlood: BloodImages(CacheHelper.getData(key: 'userBloodType'))
-          .getBloodImages(),
-      personName: CacheHelper.getData(key: 'userName'),
     );
   }
 }
-
-/// Self API (get)
-/// {
-/// bloog group,
-/// name,
-/// location,
-/// phone number,
-/// email
-/// } i can make request blood with these info
-/// to get those enfo
-//  var headers = {
-// };
-// var request = http.Request('GET', Uri.parse('http://127.0.0.1:8000/getuser'));
-
-// request.headers.addAll(headers);
-
-// http.StreamedResponse response = await request.send();
-
-// if (response.statusCode == 200) {
-//   print(await response.stream.bytesToString());
-// }
-// else {
-//   print(response.reasonPhrase);
-// }
 
 Future<bool> sendUserBloodRequest() async {
   var token = CacheHelper.getData(key: 'token');
@@ -124,21 +98,21 @@ Future<bool> sendUserBloodRequest() async {
   }
 }
 
-void getUserBloodRequest() async {
-  var token = CacheHelper.getData(key: 'token');
-  print(token);
-  var headers = {'Authorization': 'Token $token'};
-  var request = http.Request(
-      'GET', Uri.parse('http://127.0.0.1:8000/blood/user/blood-requests/'));
+// void getUserBloodRequest() async {
+//   var token = CacheHelper.getData(key: 'token');
+//   print(token);
+//   var headers = {'Authorization': 'Token $token'};
+//   var request = http.Request(
+//       'GET', Uri.parse('http://127.0.0.1:8000/blood/user/blood-requests/'));
 
-  request.headers.addAll(headers);
+//   request.headers.addAll(headers);
 
-  http.StreamedResponse response = await request.send();
+//   http.StreamedResponse response = await request.send();
 
-  if (response.statusCode == 200) {
-    var body = await response.stream.bytesToString();
-    print(body);
-  } else {
-    print(response.reasonPhrase);
-  }
-}
+//   if (response.statusCode == 200) {
+//     var body = await response.stream.bytesToString();
+//     print(body);
+//   } else {
+//     print(response.reasonPhrase);
+//   }
+// }

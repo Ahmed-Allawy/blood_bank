@@ -1,3 +1,4 @@
+import 'package:blood_bank/model/get_user_info.dart';
 import 'package:blood_bank/view/presentation/auth/register/register.dart';
 import 'package:blood_bank/view/presentation/home_screen/home_body.dart';
 import 'package:blood_bank/view/shared/component/components.dart';
@@ -25,6 +26,8 @@ class _LogInState extends State<LogIn> {
   final passwordController = TextEditingController();
   var formKey = GlobalKey<FormState>();
   bool reqstatus = false;
+  late final GetUserInfo userdata;
+  @override
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
@@ -106,10 +109,29 @@ class _LogInState extends State<LogIn> {
                         login(phoneNumber, passwordController.text)
                             .then((value) {
                           if (value) {
+                            getUserInfo().then((value) {
+                              setState(() {
+                                userdata = value;
+                                CacheHelper.saveData(
+                                    key: 'userEmail', value: userdata.email);
+                                CacheHelper.saveData(
+                                    key: 'userPhoneNumber',
+                                    value: userdata.phoneNum);
+                                CacheHelper.saveData(
+                                    key: 'userName', value: userdata.name);
+                                CacheHelper.saveData(
+                                    key: 'userLocation',
+                                    value: userdata.location);
+                                CacheHelper.saveData(
+                                    key: 'userBloodType',
+                                    value: userdata.bloodGroup);
+                              });
+                            });
                             nextScreen(context, const Home());
                           } else {
                             setState(() {
                               reqstatus = true;
+                              passwordController.clear();
                             });
                           }
                         });
@@ -154,31 +176,51 @@ class _LogInState extends State<LogIn> {
 }
 
 Future<bool> login(phone, pass) async {
+  print(phone);
   var headers = {'Content-Type': 'application/json'};
   var request = http.Request('POST', Uri.parse('http://127.0.0.1:8000/login/'));
   //here I send the password and the phone number for login by passing them to the body
   request.body = json.encode({"password": pass, "phone_num": phone});
   request.headers.addAll(headers);
-  print(request.body);
+
   http.StreamedResponse response = await request.send();
   //here is the response
   if (response.statusCode == 200) {
     String body = await response.stream.bytesToString();
     var responseJason = jsonDecode(body);
-    print(responseJason);
+
     if (responseJason['message'] != 'Invalid phone number and password') {
       //here I save the token to var you can save it to sharedprefrence
       var token = responseJason['token'];
 
       CacheHelper.saveData(key: 'token', value: token);
-      print(body);
-      print("Token$token");
+
       return true;
     } else {
       return false;
     }
   } else {
-    print('sfsdfsfdsfsfdagasdgasgrggrgdfgasdgrgvrdcf');
     return false;
+  }
+}
+
+Future<GetUserInfo> getUserInfo() async {
+  var token = CacheHelper.getData(key: 'token');
+  var headers = {'Authorization': 'Token $token'};
+  var request =
+      http.Request('GET', Uri.parse('http://127.0.0.1:8000/getuser/'));
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 202) {
+    var body = await response.stream.bytesToString();
+    Map<String, dynamic> jsonList = jsonDecode(body);
+    GetUserInfo userData = GetUserInfo.fromJson(jsonList);
+
+    return userData;
+  } else {
+    throw Exception('Failed to load user data');
   }
 }

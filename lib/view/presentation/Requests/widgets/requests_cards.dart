@@ -43,6 +43,7 @@ class _RequestCardsState extends State<RequestCards> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     TextField(
                       text: "Date: ${widget.dateText}",
