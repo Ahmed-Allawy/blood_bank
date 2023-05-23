@@ -39,18 +39,20 @@ class GeneralcustomButton extends StatelessWidget {
 }
 
 class BloodInfo extends StatelessWidget {
-  const BloodInfo({super.key, this.text, this.image});
+  const BloodInfo({Key? key, this.text, this.image}) : super(key: key);
+
   final String? text;
   final String? image;
+
   @override
   Widget build(BuildContext context) {
-    LayoutSize().init(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18),
       child: Container(
         decoration: const BoxDecoration(
-            color: anotherColor,
-            borderRadius: BorderRadius.all(Radius.circular(15))),
+          color: anotherColor,
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+        ),
         child: Padding(
           padding: const EdgeInsets.only(left: 15, top: 10),
           child: Column(
@@ -66,25 +68,29 @@ class BloodInfo extends StatelessWidget {
                 ),
                 textAlign: TextAlign.left,
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: Row(children: <Widget>[
-                  Text(
-                    text!,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Poppins',
-                      fontSize: 15,
-                      color: secondaryColor,
+              const SizedBox(height: 10),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      text!,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins',
+                        fontSize: 15,
+                        color: secondaryColor,
+                      ),
+                      textAlign: TextAlign.left,
                     ),
-                    textAlign: TextAlign.left,
                   ),
+                  const SizedBox(width: 10),
                   Image.asset(
                     image!,
-                    width: 0.33 * LayoutSize.layoutValue!,
-                    height: LayoutSize.layoutValue! * 0.15,
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    height: MediaQuery.of(context).size.height * 0.1,
                   ),
-                ]),
+                ],
               ),
             ],
           ),

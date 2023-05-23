@@ -224,13 +224,6 @@ class _BloodRequestViewBodyState extends State<BloodRequestViewBody> {
   }
 }
 
-/// other API (post)
-/// {
-/// bloog group,
-/// name,
-/// date of birth
-/// } at the same user(self) info
-
 sendOtherBloodRequest(String Fname, String location, BuildContext context,
     String bloodType) async {
   var token = CacheHelper.getData(key: 'token');

@@ -112,25 +112,28 @@ class _LogInState extends State<LogIn> {
                         login(phoneNumber, passwordController.text)
                             .then((value) {
                           if (value) {
-                            getUserInfo().then((value) {
-                              setState(() {
-                                userdata = value;
-                                CacheHelper.saveData(
-                                    key: 'userEmail', value: userdata.email);
-                                CacheHelper.saveData(
-                                    key: 'userPhoneNumber',
-                                    value: userdata.phoneNum);
-                                CacheHelper.saveData(
-                                    key: 'userName', value: userdata.name);
-                                CacheHelper.saveData(
-                                    key: 'userLocation',
-                                    value: userdata.location);
-                                CacheHelper.saveData(
-                                    key: 'userBloodType',
-                                    value: userdata.bloodGroup);
-                              });
-                            });
                             isAdmin().then((value) {
+                              if (!value) {
+                                getUserInfo().then((value) {
+                                  setState(() {
+                                    userdata = value;
+                                    CacheHelper.saveData(
+                                        key: 'userEmail',
+                                        value: userdata.email);
+                                    CacheHelper.saveData(
+                                        key: 'userPhoneNumber',
+                                        value: userdata.phoneNum);
+                                    CacheHelper.saveData(
+                                        key: 'userName', value: userdata.name);
+                                    CacheHelper.saveData(
+                                        key: 'userLocation',
+                                        value: userdata.location);
+                                    CacheHelper.saveData(
+                                        key: 'userBloodType',
+                                        value: userdata.bloodGroup);
+                                  });
+                                });
+                              }
                               value
                                   ? Get.to(() => const BloodBankView(),
                                       transition: Transition.rightToLeft,
