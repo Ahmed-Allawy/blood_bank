@@ -22,17 +22,17 @@ class HistoryDonatesCards extends StatelessWidget {
     LayoutSize().init(context);
     return Center(
       child: Container(
-        height: LayoutSize.layoutValue! * 0.27,
+        // height: LayoutSize.layoutValue! * 0.4,
         width: LayoutSize.layoutValue! * 0.9,
         decoration: const BoxDecoration(
             color: anotherColor,
             borderRadius: BorderRadius.all(Radius.circular(11))),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 15, top: 10),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Column(
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 15, top: 10),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     TextField(
@@ -50,11 +50,17 @@ class HistoryDonatesCards extends StatelessWidget {
                     TextField(
                       text: "Location: $personLocation",
                     ),
+                    SizedBox(
+                      height: LayoutSize.layoutValue! * 0.035,
+                    ),
                   ],
                 ),
-                Column(children: <Widget>[
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 15),
+                child: Column(children: <Widget>[
                   TextField(
-                    text: 'Donte name $personName',
+                    text: 'Donate name: $personName',
                   ),
                   if (personImage != null)
                     Image.asset(
@@ -62,9 +68,9 @@ class HistoryDonatesCards extends StatelessWidget {
                       width: 88,
                       height: 119,
                     ),
-                ])
-              ]),
-        ),
+                ]),
+              ),
+            ]),
       ),
     );
   }

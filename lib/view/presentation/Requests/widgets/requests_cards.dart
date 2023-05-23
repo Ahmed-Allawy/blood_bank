@@ -30,78 +30,78 @@ class _RequestCardsState extends State<RequestCards> {
   Widget build(BuildContext context) {
     LayoutSize().init(context);
     return Center(
-      child: Stack(children: <Widget>[
-        Container(
-          height: LayoutSize.layoutValue! * 0.4,
-          width: LayoutSize.layoutValue! * 0.9,
-          decoration: const BoxDecoration(
-              color: anotherColor,
-              borderRadius: BorderRadius.all(Radius.circular(11))),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 15, top: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Container(
+        // height: LayoutSize.layoutValue! * 0.4,
+        width: LayoutSize.layoutValue! * 0.9,
+        decoration: const BoxDecoration(
+            color: anotherColor,
+            borderRadius: BorderRadius.all(Radius.circular(11))),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 15, top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     TextField(
                       text: "Date: ${widget.dateText}",
                     ),
                     SizedBox(
-                      width: (LayoutSize.layoutValue! * 0.9) / 4.5,
+                      height: LayoutSize.layoutValue! * 0.025,
                     ),
                     TextField(
-                      text: widget.personName,
+                      text: "Time: ${widget.time}",
+                    ),
+                    SizedBox(
+                      height: LayoutSize.layoutValue! * 0.025,
+                    ),
+                    TextField(
+                      text: "Location: ${widget.personLocation}",
+                    ),
+                    SizedBox(
+                      height: LayoutSize.layoutValue! * 0.035,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Row(children: <Widget>[
+                        if (!widget.status!)
+                          SizedBox(
+                            width: 125,
+                            height: 37,
+                            child: GeneralcustomButton(
+                              text: widget.status! ? "Done" : "Cancel",
+                              onTap: widget.onTap,
+                              selected: true,
+                            ),
+                          ),
+                        SizedBox(
+                          width: LayoutSize.layoutValue! * 0.02,
+                        ),
+                        TextField(
+                          text: widget.status! ? "Accepted" : "Pending",
+                        ),
+                      ]),
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: LayoutSize.layoutValue! * 0.025,
-                ),
-                TextField(
-                  text: "Time: ${widget.time}",
-                ),
-                SizedBox(
-                  height: LayoutSize.layoutValue! * 0.025,
-                ),
-                TextField(
-                  text: "Location: ${widget.personLocation}",
-                ),
-                SizedBox(
-                  height: LayoutSize.layoutValue! * 0.035,
-                ),
-                Row(children: <Widget>[
-                  SizedBox(
-                    width: 125,
-                    height: 37,
-                    child: GeneralcustomButton(
-                      text: widget.status! ? "Done" : "Cancel",
-                      onTap: widget.onTap,
-                      selected: true,
-                    ),
-                  ),
-                  SizedBox(
-                    width: LayoutSize.layoutValue! * 0.02,
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 15),
+                child: Column(children: <Widget>[
                   TextField(
-                    text: widget.status! ? "Accepted" : "Pending",
+                    text: widget.personName,
                   ),
+                  if (widget.personImage != null)
+                    Image.asset(
+                      widget.personImage!,
+                      width: 88,
+                      height: 119,
+                    ),
                 ]),
-              ],
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: 2,
-          right: 10,
-          child: Image.asset(
-            widget.personImage!,
-            width: 88,
-            height: 119,
-          ),
-        ),
-      ]),
+              ),
+            ]),
+      ),
     );
   }
 }

@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 
 void main() {
-  CacheHelper.init();
   runApp(DevicePreview(builder: (context) => const MyApp()));
+  CacheHelper.init();
 }
 
 class MyApp extends StatelessWidget {

@@ -31,21 +31,23 @@ class _NaveBarState extends State<NaveBar> {
       ),
       child: Column(
         children: <Widget>[
-          Image.asset(
-            BloodImages(CacheHelper.getData(key: 'userBloodType'))
-                .getBloodImages(),
-            width: 88,
-            height: 119,
-          ),
-          Text(
-            CacheHelper.getData(key: 'userName'),
-            style: const TextStyle(
-              fontSize: 18,
-              color: secondaryColor,
-              fontWeight: FontWeight.w500,
+          if (CacheHelper.getData(key: 'userBloodType') != null)
+            Image.asset(
+              BloodImages(CacheHelper.getData(key: 'userBloodType'))
+                  .getBloodImages(),
+              width: 88,
+              height: 119,
             ),
-            textAlign: TextAlign.left,
-          ),
+          if (CacheHelper.getData(key: 'userName') != null)
+            Text(
+              CacheHelper.getData(key: 'userName'),
+              style: const TextStyle(
+                fontSize: 18,
+                color: secondaryColor,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.left,
+            ),
           SizedBox(
             height: 0.08 * LayoutSize.layoutValue!,
           ),
@@ -77,13 +79,26 @@ class _NaveBarState extends State<NaveBar> {
               text: 'Sign out',
               onTap: () {
                 logout();
+
                 CacheHelper.removeData(key: 'token');
-                CacheHelper.removeData(key: 'userEmail');
-                CacheHelper.removeData(key: 'userPhoneNumber');
-                CacheHelper.removeData(key: 'userName');
-                CacheHelper.removeData(key: 'userDate');
-                CacheHelper.removeData(key: 'userLocation');
-                CacheHelper.removeData(key: 'userBloodType');
+                if (CacheHelper.getData(key: 'userEmail') != null) {
+                  CacheHelper.removeData(key: 'userEmail');
+                }
+                if (CacheHelper.getData(key: 'userPhoneNumber') != null) {
+                  CacheHelper.removeData(key: 'userPhoneNumber');
+                }
+                if (CacheHelper.getData(key: 'userName') != null) {
+                  CacheHelper.removeData(key: 'userName');
+                }
+                if (CacheHelper.getData(key: 'userDate') != null) {
+                  CacheHelper.removeData(key: 'userDate');
+                }
+                if (CacheHelper.getData(key: 'userLocation') != null) {
+                  CacheHelper.removeData(key: 'userLocation');
+                }
+                if (CacheHelper.getData(key: 'userBloodType') != null) {
+                  CacheHelper.removeData(key: 'userBloodType');
+                }
                 nextScreen(context, const LogIn());
               },
             ),

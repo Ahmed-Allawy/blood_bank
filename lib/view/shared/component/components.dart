@@ -359,67 +359,72 @@ class BloodBankCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     LayoutSize().init(context);
-    return Center(
-      child: Stack(children: <Widget>[
-        Container(
-          height: LayoutSize.layoutValue! * 0.36,
-          width: LayoutSize.layoutValue! * 0.9,
-          decoration: const BoxDecoration(
-              color: anotherColor,
-              borderRadius: BorderRadius.all(Radius.circular(11))),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 15, top: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return
+        //
+        Center(
+      child: Container(
+        // height: LayoutSize.layoutValue! * 0.4,
+        width: LayoutSize.layoutValue! * 0.9,
+        decoration: const BoxDecoration(
+            color: anotherColor,
+            borderRadius: BorderRadius.all(Radius.circular(11))),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 15, top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     TextField(
                       text: "Date: $dateText",
                     ),
+                    SizedBox(
+                      height: LayoutSize.layoutValue! * 0.025,
+                    ),
                     TextField(
-                      text: personName,
+                      text: "Time: $time",
+                    ),
+                    SizedBox(
+                      height: LayoutSize.layoutValue! * 0.025,
+                    ),
+                    TextField(
+                      text: "Location: $personLocation",
+                    ),
+                    SizedBox(
+                      height: LayoutSize.layoutValue! * 0.035,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: SizedBox(
+                        width: 110,
+                        height: 37,
+                        child: GeneralcustomButton(
+                          text: buttonCaption,
+                          onTap: onTapButton,
+                          selected: true,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: LayoutSize.layoutValue! * 0.025,
-                ),
-                TextField(
-                  text: "Time: $time",
-                ),
-                SizedBox(
-                  height: LayoutSize.layoutValue! * 0.025,
-                ),
-                TextField(
-                  text: "Location: $personLocation",
-                ),
-                SizedBox(
-                  height: LayoutSize.layoutValue! * 0.02,
-                ),
-                SizedBox(
-                  width: 110,
-                  height: 37,
-                  child: GeneralcustomButton(
-                    text: buttonCaption,
-                    onTap: onTapButton,
-                    selected: true,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 15),
+                child: Column(children: <Widget>[
+                  TextField(
+                    text: personName,
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 220, top: 20),
-          child: Image.asset(
-            personImage!,
-            width: 88,
-            height: 119,
-          ),
-        ),
-      ]),
+                  if (personImage != null)
+                    Image.asset(
+                      personImage!,
+                      width: 88,
+                      height: 119,
+                    ),
+                ]),
+              ),
+            ]),
+      ),
     );
   }
 }
